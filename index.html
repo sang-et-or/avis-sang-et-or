@@ -1,0 +1,1733 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avis Sang et Or</title>
+<meta name="description" content="Site de supporters du RC Lens : note les joueurs, match par match et sur la saison.">
+<meta property="og:title" content="Avis Sang et Or">
+<meta property="og:description" content="Fiers d'être Lensois : note les joueurs du RC Lens et découvre les meilleures performances de la saison.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23C8102E%22/%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2230%22 fill=%22%23F5C400%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+html { -webkit-text-size-adjust: 100%; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; font-size: 14px; }
+img { max-width: 100%; }
+/* Layout: bande rayée rouge/or façon tribunes de Bollaert, onglets Effectif / Matchs, grilles de cartes ; fiches en panneau latéral */
+:root {
+  --red: #C8102E;
+  --gold: #F5C400;
+  --gold-ink: #8A6A00;
+  --bg: #F4F3EE;
+  --surface: #FFFFFF;
+  --fg: #1B1714;
+  --muted: #6B645C;
+  --line: #E1DED5;
+  --good: #1F7A4A;
+  --mid: #8A6A00;
+  --bad: #B3261E;
+  --scrim: rgba(20, 16, 12, .45);
+  --bar-muted: #D8C9A8;
+  --grass1: #2F8A4C;
+  --grass2: #2A7D44;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --red: #F0485C; --gold: #F5C400; --gold-ink: #F5C400;
+    --bg: #15120F; --surface: #1F1B17; --fg: #F2EEE6; --muted: #A79F94; --line: #332D27;
+    --good: #5FD08F; --mid: #E8C547; --bad: #FF7B72; --scrim: rgba(0,0,0,.6); --bar-muted: #5A4E3E; --grass1: #23673A; --grass2: #1F5E35;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --red: #F0485C; --gold: #F5C400; --gold-ink: #F5C400;
+  --bg: #15120F; --surface: #1F1B17; --fg: #F2EEE6; --muted: #A79F94; --line: #332D27;
+  --good: #5FD08F; --mid: #E8C547; --bad: #FF7B72; --scrim: rgba(0,0,0,.6); --bar-muted: #5A4E3E; --grass1: #23673A; --grass2: #1F5E35;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* En-tête */
+.stripes { height: 14px; background: repeating-linear-gradient(90deg, var(--red) 0 48px, var(--gold) 48px 96px); }
+header.top { padding-block: 28px 20px; display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+h1 { font-family: var(--display); font-weight: 900; font-size: clamp(44px, 9vw, 84px); line-height: .9; margin: 6px 0 0; text-transform: uppercase; letter-spacing: .01em; text-wrap: balance; }
+h1 .r { color: var(--red); }
+h1 .g { color: var(--gold-ink); }
+.lede { margin: 12px 0 0; color: var(--muted); max-width: 52ch; }
+.stats { display: flex; gap: 20px; font-variant-numeric: tabular-nums; }
+.me-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 14px; margin-bottom: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; font-size: 14px; }
+.me-bar b { color: var(--red); }
+.me-bar form { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.me-bar input { width: 200px; max-width: 100%; }
+.me-bar .err { color: var(--bad); font-size: 13px; width: 100%; }
+.me-actions { display: inline-flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+.auth { position: fixed; z-index: 26; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(420px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow-y: auto; background: var(--bg); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+#auth-scrim { z-index: 25; }
+.auth .close { top: 18px; }
+.auth-head { background: var(--red); color: #fff; padding: 0 20px 16px; }
+.auth-head .stripes { margin: 0 -20px 14px; }
+.auth-head h2 { margin: 0; font-family: var(--display); font-weight: 900; font-size: 32px; text-transform: uppercase; line-height: 1; padding-right: 36px; }
+.auth-head p { margin: 6px 0 0; font-size: 14px; opacity: .92; }
+#auth-form { display: grid; gap: 12px; padding: 18px 20px 6px; }
+#auth-form label { display: grid; gap: 4px; font-weight: 600; font-size: 13px; }
+#auth-form input { font-size: 16px; padding: 10px 12px; }
+#auth-form small { font-weight: 400; color: var(--muted); font-size: 12px; }
+#auth-form .btn { padding: 11px 14px; font-size: 15px; }
+.auth-err { color: var(--bad); font-size: 13px; font-weight: 600; }
+.auth-ok { color: var(--good); font-size: 14px; font-weight: 600; }
+.auth-links { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 8px 20px 18px; font-size: 13px; }
+.linkbtn { background: none; border: 0; padding: 0; font: inherit; color: var(--red); text-decoration: underline; cursor: pointer; }
+.rav { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: #1B1714; font-weight: 800; font-size: 12px; }
+.review .mod { grid-column: 2 / -1; justify-self: start; margin-top: 4px; }
+.notice-cta { display: grid; gap: 8px; }
+.notice-cta .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat b { display: block; font-family: var(--display); font-size: 34px; line-height: 1; font-weight: 800; }
+.stat span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+
+/* Onglets */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.tab { font: inherit; font-family: var(--display); font-weight: 800; font-size: 22px; text-transform: uppercase; letter-spacing: .03em; background: none; border: 0; color: var(--muted); padding: 6px 14px 8px; cursor: pointer; border-bottom: 4px solid transparent; margin-bottom: -1px; }
+.tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--red); }
+.tabs { overflow-x: auto; scrollbar-width: none; }
+.tab { white-space: nowrap; flex: none; }
+@media (max-width: 520px) { .tab { font-size: 18px; padding: 6px 10px 8px; } }
+
+/* Barre d'outils */
+.toolbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.toolbar .wrap { padding-block: 10px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: inherit; font-size: 13px; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--fg); padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.tools-right { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+select, input[type="text"], input[type="number"], input[type="date"], textarea { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+.btn { font: inherit; font-weight: 600; font-size: 14px; border-radius: 8px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.btn.primary { background: var(--red); border-color: var(--red); color: #fff; }
+.btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+.btn.ghost { background: transparent; }
+.btn.danger { color: var(--bad); }
+.btn.small { font-size: 12px; padding: 3px 9px; }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+/* Lignes et cartes */
+main { padding-block: 20px 60px; display: grid; gap: 32px; }
+.view { display: grid; gap: 32px; }
+.line-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+.line-head h2 { font-family: var(--display); font-weight: 800; font-size: 28px; text-transform: uppercase; margin: 0; letter-spacing: .02em; }
+.line-head span { color: var(--muted); font-size: 13px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.card { position: relative; text-align: left; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 12px; align-items: center; transition: transform .12s ease, border-color .12s ease; }
+.card:hover { border-color: var(--red); transform: translateY(-2px); }
+.avatar { position: relative; width: 58px; height: 58px; flex: none; }
+.avatar .ph { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--gold); display: block; }
+.jersey { display: block; width: 58px; height: 58px; }
+.jersey.big { width: 92px; height: 92px; }
+.jz-bg { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
+.panel-head .jz-bg { fill: rgba(0,0,0,.18); stroke: var(--gold); stroke-width: 2.5; }
+.jz-name { font-family: var(--body); font-weight: 700; letter-spacing: .04em; }
+.jz-num { font-family: var(--display); font-weight: 900; }
+/* Performances : un seul univers, le charbon et la lampe de mineur, quel que soit le thème */
+.perf { --coal: #141110; --coal2: #201A16; --coal3: #2C241E; --ember: #F5C400; --flame: #FF8A1F; --ash: #F4EEE4; --soot: #A89C8D;
+  background: var(--coal); color: var(--ash); border-radius: 16px; overflow: hidden; display: grid; gap: 0; }
+.perf-hero { position: relative; display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 8px 32px; align-items: center; padding: 36px 32px 0;
+  background: radial-gradient(420px 320px at 110px 46%, rgba(255, 170, 40, .28), transparent 70%), radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.06) 50%, transparent 51%) 0 0 / 7px 7px, linear-gradient(180deg, var(--coal) 0%, var(--coal2) 100%); }
+@media (max-width: 640px) { .perf-hero { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 28px 16px 0; } }
+.lamp { width: 180px; height: auto; overflow: visible; filter: drop-shadow(0 10px 24px rgba(0,0,0,.6)); }
+@media (max-width: 640px) { .lamp { width: 132px; } }
+.lamp .flame { transform-origin: 60px 112px; animation: flicker 2.4s ease-in-out infinite; }
+.lamp .halo { transform-origin: 60px 96px; animation: halo 3.2s ease-in-out infinite; }
+@keyframes flicker { 0%, 100% { transform: scale(1, 1); } 30% { transform: scale(.96, 1.07); } 60% { transform: scale(1.03, .95); } }
+@keyframes halo { 0%, 100% { opacity: .85; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lamp .flame, .lamp .halo { animation: none; } }
+.perf-hero .eyebrow { color: var(--soot); }
+.proud { margin: 6px 0 0; font-family: var(--display); font-weight: 900; text-transform: uppercase; line-height: .86; letter-spacing: .01em; font-size: clamp(46px, 8vw, 92px); text-wrap: balance; }
+.proud .l1 { display: block; color: var(--ash); }
+.proud .l2 { display: block; color: var(--ember); text-shadow: 0 0 28px rgba(245, 196, 0, .35); }
+.perf-hero .recap { margin: 14px 0 0; color: var(--soot); font-size: 15px; max-width: 48ch; }
+.perf-hero .recap b { color: var(--ash); }
+.charb { grid-column: 1 / -1; margin: 18px -32px 0; padding: 6px 0 10px; text-align: center; font-family: var(--display); font-weight: 900; text-transform: uppercase;
+  font-size: clamp(44px, 13vw, 168px); line-height: .9; letter-spacing: .06em; color: transparent; -webkit-text-stroke: 2px var(--ember); white-space: nowrap; overflow: hidden; }
+@media (max-width: 640px) { .charb { margin: 14px -16px 0; -webkit-text-stroke-width: 1.5px; } }
+.perf .stripes { height: 10px; }
+.perf-body { padding: 28px 32px 36px; display: grid; gap: 28px; }
+@media (max-width: 640px) { .perf-body { padding: 22px 16px 28px; } }
+.perf h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 26px; text-transform: uppercase; letter-spacing: .03em; color: var(--ash); }
+.perf .src { font-size: 12px; color: var(--soot); }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.ktile { background: var(--coal2); border: 1px solid var(--coal3); border-radius: 10px; padding: 14px; display: grid; gap: 4px; align-content: start; }
+.ktile b { font-family: var(--display); font-weight: 900; font-size: 44px; line-height: .95; color: var(--ash); font-variant-numeric: tabular-nums; }
+.ktile b em { font-style: normal; color: var(--ember); }
+.ktile span { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--soot); }
+.ktile small { font-size: 12px; color: var(--soot); }
+.star { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; background: linear-gradient(110deg, var(--coal3), var(--coal2) 60%); border: 1px solid rgba(245, 196, 0, .4); border-radius: 14px; padding: 18px 22px; cursor: pointer; color: inherit; font: inherit; text-align: left; }
+.star:hover { border-color: var(--ember); }
+.star .av > img, .star .av > svg { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; object-position: top; display: block; box-shadow: 0 0 0 3px var(--ember), 0 0 30px rgba(245, 196, 0, .35); background: var(--ember); }
+.star .lbl { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ember); font-weight: 700; }
+.star .nm { font-family: var(--display); font-weight: 900; font-size: clamp(30px, 5vw, 48px); line-height: .95; text-transform: uppercase; }
+.star .more { color: var(--soot); font-size: 14px; margin-top: 4px; }
+.star .big { font-family: var(--display); font-weight: 900; font-size: clamp(70px, 12vw, 120px); line-height: .8; color: var(--ember); text-align: right; font-variant-numeric: tabular-nums; }
+.star .big small { display: block; font-size: 16px; letter-spacing: .1em; color: var(--soot); text-align: right; margin-top: 6px; }
+@media (max-width: 640px) { .star { grid-template-columns: auto minmax(0, 1fr); padding: 16px; } .star .av > img, .star .av > svg { width: 76px; height: 76px; } .star .big { grid-column: 1 / -1; text-align: left; } .star .big small { text-align: left; display: inline; margin-left: 8px; } }
+.boards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.board { background: var(--coal2); border: 1px solid var(--coal3); border-radius: 12px; padding: 16px; display: grid; gap: 10px; align-content: start; }
+.board h4 { margin: 0; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--soot); font-weight: 700; }
+.lead { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; background: none; border: 0; padding: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.lead .av > img, .lead .av > svg { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; object-position: top; display: block; box-shadow: 0 0 0 2px var(--ember); background: var(--ember); }
+.lead .nm { font-weight: 700; font-size: 16px; line-height: 1.15; overflow-wrap: anywhere; }
+.lead .v { font-family: var(--display); font-weight: 900; font-size: 44px; line-height: 1; color: var(--ember); font-variant-numeric: tabular-nums; }
+.rank-rows { display: grid; gap: 7px; }
+.rr { display: grid; grid-template-columns: 16px minmax(0, 1fr) 30px; gap: 4px 8px; align-items: center; font-size: 13px; background: none; border: 0; padding: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.rr .pos { color: var(--soot); font-variant-numeric: tabular-nums; font-size: 12px; }
+.rr .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.rr .v { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.rr .bar { grid-column: 2 / 3; height: 4px; border-radius: 2px; background: var(--coal3); overflow: hidden; }
+.rr .bar i { display: block; height: 100%; background: var(--ember); border-radius: 2px; }
+.perf .empty-c { font-size: 13px; color: var(--soot); border: 1px dashed var(--coal3); border-radius: 8px; padding: 12px; }
+.perf .go { font: inherit; font-weight: 700; font-size: 13px; background: var(--ember); color: #1B1714; border: 0; border-radius: 8px; padding: 8px 12px; cursor: pointer; justify-self: start; }
+.perf :focus-visible { outline-color: var(--ember); }
+
+/* Terrain : onze type + banc */
+.pitch-sec { display: grid; grid-template-columns: minmax(0, 540px) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .pitch-sec { grid-template-columns: minmax(0, 1fr); } }
+.pitch-head { grid-column: 1 / -1; display: grid; gap: 2px; }
+.pitch-head h2 { font-family: var(--display); font-weight: 800; font-size: 28px; text-transform: uppercase; margin: 0; letter-spacing: .02em; }
+.pitch-head span { color: var(--muted); font-size: 13px; }
+.pitch { position: relative; width: 100%; aspect-ratio: 68 / 96; border-radius: 12px; overflow: hidden; background: repeating-linear-gradient(180deg, var(--grass1) 0 10%, var(--grass2) 10% 20%); box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+.pitch .lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.pitch .lines * { fill: none; stroke: rgba(255,255,255,.75); stroke-width: .5; }
+.pitch .lines .spot { fill: rgba(255,255,255,.75); stroke: none; }
+.pitch .fm { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); font-family: var(--display); font-weight: 800; font-size: 15px; line-height: 1; color: #fff; letter-spacing: .06em; background: rgba(0,0,0,.45); padding: 3px 8px; border-radius: 4px; }
+.tok { position: absolute; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 3px; background: none; border: 0; padding: 0; cursor: pointer; color: #fff; font: inherit; width: 88px; }
+.tok .av { position: relative; width: 58px; height: 58px; }
+.tok .av > img, .tok .av > svg { width: 58px; height: 58px; border-radius: 50%; display: block; box-shadow: 0 2px 8px rgba(0,0,0,.4); object-fit: cover; object-position: top; background: var(--gold); }
+.tok .nm { font-weight: 700; font-size: 12px; line-height: 1.15; text-shadow: 0 1px 3px rgba(0,0,0,.9); text-align: center; overflow-wrap: anywhere; }
+.rt { position: absolute; top: -5px; right: -10px; background: #1B1714; color: #fff; font-family: var(--display); font-weight: 800; font-size: 14px; line-height: 1; padding: 3px 5px; border-radius: 6px; font-variant-numeric: tabular-nums; border: 1.5px solid var(--gold); }
+.tok:hover .av > *, .tok:focus-visible .av > * { outline: 3px solid var(--gold); outline-offset: 1px; }
+@media (max-width: 520px) {
+  .tok { width: 66px; } .tok .av, .tok .av > img, .tok .av > svg { width: 42px; height: 42px; } .tok .nm { font-size: 10.5px; } .rt { font-size: 12px; right: -12px; }
+}
+.bench { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 12px; }
+.bench h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 22px; text-transform: uppercase; }
+.bench .sub { font-size: 12px; color: var(--muted); }
+.bench-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 14px 10px; }
+.btok { display: grid; justify-items: center; gap: 4px; background: none; border: 0; padding: 4px 0; cursor: pointer; font: inherit; color: var(--fg); border-radius: 8px; }
+.btok:hover { background: var(--bg); }
+.btok .av { position: relative; width: 50px; height: 50px; }
+.btok .av > img, .btok .av > svg { width: 50px; height: 50px; border-radius: 50%; display: block; object-fit: cover; object-position: top; background: var(--gold); }
+.btok .nm { font-weight: 600; font-size: 12px; text-align: center; line-height: 1.15; overflow-wrap: anywhere; }
+.btok small { font-size: 11px; color: var(--muted); }
+.dots { display: flex; gap: 2px; align-items: center; justify-content: center; flex-wrap: wrap; max-width: 92px; }
+.dots i { width: 8px; height: 8px; border-radius: 50%; display: block; box-sizing: border-box; }
+.dots i.s { background: var(--red); }
+.dots i.c { border: 2px solid var(--red); }
+.dots i.n { width: 4px; height: 4px; margin: 2px; background: var(--muted); opacity: .5; }
+.dots.big { max-width: none; justify-content: flex-start; gap: 4px; }
+.dots.big i { width: 14px; height: 14px; } .dots.big i.c { border-width: 3px; } .dots.big i.n { width: 6px; height: 6px; margin: 4px; }
+.dots-legend { display: flex; gap: 4px 10px; flex-wrap: wrap; font-size: 11px; color: var(--muted); align-items: center; border-top: 1px solid var(--line); padding-top: 8px; }
+.dots-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.usage { display: grid; gap: 6px; }
+.all-head { display: flex; align-items: baseline; gap: 12px; }
+.all-head h2 { font-family: var(--display); font-weight: 800; font-size: 28px; text-transform: uppercase; margin: 0; }
+.all-head span { color: var(--muted); font-size: 13px; }
+
+/* Matchs : liste + colonne latérale */
+.mlayout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 24px; align-items: start; }
+.side { display: grid; gap: 16px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); }
+@media (max-width: 900px) { .mlayout { grid-template-columns: minmax(0, 1fr); } .side { position: static; order: -1; } }
+.side h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 22px; text-transform: uppercase; letter-spacing: .02em; }
+.side .sub { font-size: 12px; color: var(--muted); }
+.side .box { gap: 8px; }
+.tbl-wrap { overflow-x: auto; }
+.rank { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.rank th { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+.rank th:nth-child(2), .rank td:nth-child(2) { text-align: left; }
+.rank td { padding: 4px 6px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.rank td:nth-child(2) { white-space: normal; }
+.rank tr.me td { background: var(--gold); color: #1B1714; font-weight: 700; }
+.rank td.pts { font-weight: 700; }
+.form { display: flex; gap: 6px; flex-wrap: wrap; }
+.form span { width: 30px; height: 30px; border-radius: 6px; display: grid; place-items: center; font-weight: 800; font-size: 13px; border: 1.5px solid currentColor; }
+.form .V { color: var(--good); } .form .N { color: var(--mid); } .form .D { color: var(--bad); }
+.kpis { display: flex; gap: 18px; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.kpi b { display: block; font-family: var(--display); font-weight: 900; font-size: 34px; line-height: 1; }
+.kpi span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.kpi .delta { font-size: 12px; font-weight: 600; }
+.chart { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .grid-l { stroke: var(--line); stroke-width: 1; }
+.chart .axis-t { fill: var(--muted); font-size: 10px; font-family: var(--body); }
+.chart .val-t { fill: var(--fg); font-size: 10px; font-weight: 700; font-family: var(--body); }
+.chart .bar { fill: var(--bar-muted); }
+.chart .bar.hl { fill: var(--red); }
+.chart .avg-l { stroke: var(--fg); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.chart .tick { stroke: var(--fg); stroke-width: 2.5; stroke-linecap: round; }
+.chart .hit { fill: transparent; cursor: default; }
+.chart .hit:hover + .bar, .chart .hit:hover { fill: color-mix(in srgb, var(--fg) 6%, transparent); }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); align-items: center; }
+.legend i { display: inline-block; vertical-align: middle; margin-right: 6px; }
+.legend .lb { width: 12px; height: 10px; background: var(--red); border-radius: 2px; }
+.legend .lt { width: 3px; height: 12px; background: var(--fg); border-radius: 2px; }
+.legend .la { width: 16px; border-top: 2px dashed var(--fg); }
+.chart-empty { font-size: 13px; color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; padding: 14px; text-align: center; }
+/* Statistiques de match : Lens à gauche, adversaire à droite */
+.mstats { display: grid; gap: 10px; font-variant-numeric: tabular-nums; }
+.mstats .teams { display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; }
+.mstats .teams span { display: inline-flex; align-items: center; gap: 6px; }
+.mstats .teams i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.sw-lens { background: var(--red); } .sw-opp { background: var(--bar-muted); }
+.srow { display: grid; gap: 4px; }
+.srow .vals { display: grid; grid-template-columns: 48px 1fr 48px; align-items: baseline; font-size: 13px; }
+.srow .vals b { font-family: var(--display); font-weight: 800; font-size: 20px; line-height: 1; }
+.srow .vals b:last-child { text-align: right; }
+.srow .vals span { text-align: center; color: var(--muted); font-size: 12px; }
+.split { display: flex; gap: 2px; height: 8px; }
+.split div { border-radius: 4px; min-width: 2px; }
+.split .l { background: var(--red); } .split .r { background: var(--bar-muted); }
+.split.big { height: 14px; }
+.mstats .src { font-size: 11px; color: var(--muted); }
+.mstats .src a { color: inherit; }
+.cmp { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+.cmp th { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+.cmp th:first-child, .cmp td:first-child { text-align: left; }
+.cmp td { padding: 5px 6px; text-align: right; border-bottom: 1px solid var(--line); }
+.cmp td.up { color: var(--good); } .cmp td.down { color: var(--bad); }
+.tip { position: fixed; z-index: 40; pointer-events: none; background: var(--fg); color: var(--bg); font-size: 12px; padding: 6px 9px; border-radius: 6px; max-width: 220px; line-height: 1.35; }
+.credit { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.credit a, .credits a { color: inherit; }
+.credits { font-size: 12px; color: var(--muted); }
+.credits summary { cursor: pointer; font-weight: 600; color: var(--fg); padding-block: 4px; }
+.credits ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+[hidden] { display: none !important; }
+.admin .switch { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--fg); }
+.avatar .numph { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; background: var(--bg); border: 1px solid var(--line); font-family: var(--display); font-weight: 900; font-size: 30px; color: transparent; -webkit-text-stroke: 1.3px var(--red); }
+.avatar .badge { position: absolute; right: -4px; bottom: -4px; min-width: 24px; height: 24px; padding: 0 4px; border-radius: 12px; background: var(--red); color: #fff; font-family: var(--display); font-weight: 800; font-size: 15px; display: grid; place-items: center; border: 2px solid var(--surface); font-variant-numeric: tabular-nums; }
+.who { min-width: 0; }
+.who .name { font-weight: 700; font-size: 16px; line-height: 1.2; overflow-wrap: anywhere; }
+.who .pos { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.score { text-align: right; font-variant-numeric: tabular-nums; }
+.score b { display: block; font-family: var(--display); font-weight: 800; font-size: 28px; line-height: 1; }
+.score small { font-size: 11px; color: var(--muted); white-space: nowrap; }
+.s-good { color: var(--good); } .s-mid { color: var(--mid); } .s-bad { color: var(--bad); } .s-none { color: var(--muted); }
+.mine-tag { grid-column: 1 / -1; font-size: 12px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 6px; }
+.admin-row { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 6px; }
+.empty { border: 1px dashed var(--line); border-radius: 10px; padding: 28px; text-align: center; color: var(--muted); }
+.empty strong { display: block; color: var(--fg); font-size: 16px; margin-bottom: 4px; }
+
+/* Matchs */
+.match-list { display: grid; gap: 10px; }
+.match { position: relative; text-align: left; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; display: grid; grid-template-columns: 76px 1fr auto; gap: 4px 14px; align-items: center; transition: border-color .12s ease; }
+.match:hover { border-color: var(--red); }
+.mdate { font-variant-numeric: tabular-nums; }
+.mdate b { display: block; font-family: var(--display); font-weight: 800; font-size: 26px; line-height: 1; }
+.mdate span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.mcomp { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.mteams { font-weight: 700; font-size: 16px; overflow-wrap: anywhere; }
+.mteams .lens { color: var(--red); }
+.mres { display: flex; align-items: center; gap: 10px; }
+.mscore { font-family: var(--display); font-weight: 900; font-size: 32px; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 3px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.pill.V { color: var(--good); } .pill.N { color: var(--mid); } .pill.D { color: var(--bad); }
+.mfoot { grid-column: 2 / -1; font-size: 12px; color: var(--muted); }
+.mfoot b { color: var(--fg); }
+.statlink { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--red); text-decoration: none; border-bottom: 1px solid currentColor; }
+.statlink:hover { opacity: .8; }
+.mlinks { grid-column: 2 / -1; }
+@media (max-width: 520px) { .mlinks { grid-column: 1 / -1; } }
+
+/* Gestion */
+.admin { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
+.admin form { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+.admin label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+.admin input[type="number"] { width: 72px; }
+
+/* Panneau */
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 20; }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 100%); background: var(--bg); z-index: 21; overflow-y: auto; border-left: 1px solid var(--line); padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) 0; }
+.panel-head { background: var(--red); color: #fff; padding: 20px 52px 18px 20px; position: relative; display: grid; grid-template-columns: auto 1fr; gap: 0 14px; align-items: end; }
+.panel-head .bignum { font-family: var(--display); font-weight: 900; font-size: 84px; line-height: .8; color: var(--gold); }
+.panel-head .bigph { width: 92px; height: 92px; border-radius: 50%; object-fit: cover; object-position: top; border: 3px solid var(--gold); background: rgba(0,0,0,.2); }
+.panel-head h3 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 36px; line-height: .95; margin: 0; overflow-wrap: anywhere; }
+.panel-head .pos { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+.close { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,.25); color: #fff; border: 0; border-radius: 999px; width: 34px; height: 34px; font-size: 18px; cursor: pointer; }
+.panel-body { padding: 18px 20px 40px; display: grid; gap: 22px; }
+.summary { display: flex; gap: 18px; align-items: center; }
+.summary .avg { font-family: var(--display); font-weight: 900; font-size: 56px; line-height: 1; font-variant-numeric: tabular-nums; }
+.summary .meta { color: var(--muted); font-size: 13px; }
+.dist { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; align-items: end; height: 46px; }
+.dist div { background: var(--line); border-radius: 2px 2px 0 0; min-height: 2px; }
+.dist div.on { background: var(--gold); }
+.dist-labels { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; font-size: 10px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; }
+.box h4 { margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.rate { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.rate button { font: inherit; font-family: var(--display); font-weight: 800; font-size: 20px; padding: 6px 0; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 6px; cursor: pointer; font-variant-numeric: tabular-nums; }
+.rate.compact button { font-size: 16px; padding: 4px 0; }
+.rate button[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #1B1714; }
+.scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+textarea { width: 100%; min-height: 90px; resize: vertical; }
+.form-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.counter { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.notice { font-size: 13px; color: var(--muted); }
+.reviews { display: grid; gap: 10px; }
+.review { border-top: 1px solid var(--line); padding-top: 10px; display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; align-items: start; }
+.review img { width: 28px; height: 28px; border-radius: 50%; }
+.review .rname { font-weight: 600; font-size: 14px; }
+.review .rdate { font-size: 12px; color: var(--muted); }
+.review .rnote { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1; font-variant-numeric: tabular-nums; }
+.review p { grid-column: 2 / -1; margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.mp-list { display: grid; gap: 0; }
+.mp { border-top: 1px solid var(--line); padding-block: 10px; display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: center; }
+.mp:first-child { border-top: 0; }
+.mp .nm { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.mp .nm small { color: var(--muted); font-weight: 500; margin-left: 6px; }
+.mp .av { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.mp .av b { font-family: var(--display); font-size: 22px; font-weight: 800; margin-right: 4px; }
+.mp .rate { grid-column: 1 / -1; }
+.motm { display: flex; align-items: center; gap: 12px; background: var(--gold); color: #1B1714; border-radius: 10px; padding: 12px 14px; }
+.motm .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; }
+.motm .nm { font-family: var(--display); font-weight: 800; font-size: 26px; text-transform: uppercase; line-height: 1; }
+.motm .sc { margin-left: auto; font-family: var(--display); font-weight: 900; font-size: 34px; font-variant-numeric: tabular-nums; }
+.sticky-save { position: sticky; bottom: 0; background: var(--bg); padding-block: 10px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 30; max-width: calc(100% - 32px); }
+footer { color: var(--muted); font-size: 12px; padding-block: 0 40px; }
+@media (prefers-reduced-motion: reduce) { .card, .match { transition: none; } .card:hover { transform: none; } }
+@media (max-width: 520px) {
+  .grid { grid-template-columns: 1fr; } .stats { gap: 14px; }
+  .match { grid-template-columns: 56px 1fr; } .mres { grid-column: 2; } .mfoot { grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body>
+
+<div class="stripes" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Racing Club de Lens · Saison 2026-2027</div>
+      <h1><span class="r">Avis</span> Sang <span class="g">et Or</span></h1>
+      <p class="lede">Note chaque joueur sur 10, pour sa saison ou match par match. Les avis de tous les supporters s'affichent ici en direct.</p>
+    </div>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><b id="st-players">–</b><span>Joueurs</span></div>
+      <div class="stat"><b id="st-matches">–</b><span>Matchs</span></div>
+      <div class="stat"><b id="st-fans">–</b><span>Supporters</span></div>
+    </div>
+  </header>
+  <div class="me-bar" id="me-bar">
+    <span id="me-text">Chargement…</span>
+    <span class="me-actions" id="me-actions"></span>
+    <form id="me-form" hidden>
+      <label for="me-input" class="eyebrow">Mon pseudo</label>
+      <input id="me-input" type="text" maxlength="24" autocomplete="nickname" placeholder="Ex. Sang&amp;Or62">
+      <button class="btn small primary" type="submit">Enregistrer</button>
+      <button class="btn small ghost" type="button" id="me-cancel">Annuler</button>
+    </form>
+  </div>
+  <div class="scrim" id="auth-scrim" hidden></div>
+  <div class="auth" id="auth" role="dialog" aria-modal="true" aria-labelledby="auth-title" hidden>
+    <button class="close" type="button" id="auth-close" aria-label="Fermer">✕</button>
+    <div class="auth-head"><div class="stripes" aria-hidden="true"></div><h2 id="auth-title">Créer mon compte</h2><p id="auth-intro"></p></div>
+    <form id="auth-form" novalidate>
+      <label id="f-pseudo" for="a-pseudo">Pseudo<input id="a-pseudo" type="text" maxlength="24" autocomplete="nickname" placeholder="Ex. Sang&amp;Or62"><small>2 à 24 caractères. C'est le nom affiché avec tes avis.</small></label>
+      <label id="f-email" for="a-email">Adresse e-mail<input id="a-email" type="email" autocomplete="email" placeholder="toi@exemple.fr"><small>Jamais affichée sur le site.</small></label>
+      <label id="f-pass" for="a-pass">Mot de passe<input id="a-pass" type="password" minlength="8" autocomplete="current-password"><small id="pass-hint">8 caractères minimum.</small></label>
+      <div class="auth-err" id="auth-err" role="alert" hidden></div>
+      <div class="auth-ok" id="auth-ok" role="status" hidden></div>
+      <button class="btn primary" type="submit" id="auth-submit">Créer mon compte</button>
+    </form>
+    <div class="auth-links" id="auth-links"></div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-perf" data-v="performances" aria-selected="true">Performances</button>
+    <button class="tab" role="tab" id="tab-effectif" data-v="effectif" aria-selected="false">Avis / Joueurs</button>
+    <button class="tab" role="tab" id="tab-matchs" data-v="matchs" aria-selected="false">Matchs</button>
+  </nav>
+</div>
+
+<div class="toolbar">
+  <div class="wrap">
+    <div class="chips" id="chips" role="group" aria-label="Filtrer par ligne">
+      <button class="chip" data-f="all" aria-pressed="true">Tous</button>
+      <button class="chip" data-f="G" aria-pressed="false">Gardiens</button>
+      <button class="chip" data-f="D" aria-pressed="false">Défenseurs</button>
+      <button class="chip" data-f="M" aria-pressed="false">Milieux</button>
+      <button class="chip" data-f="A" aria-pressed="false">Attaquants</button>
+    </div>
+    <div class="tools-right">
+      <span id="sort-wrap"><label for="sort" class="eyebrow">Trier </label>
+      <select id="sort">
+        <option value="num">Par numéro</option>
+        <option value="avg">Meilleure note</option>
+        <option value="match">Meilleure note en match</option>
+        <option value="count">Plus d'avis</option>
+      </select></span>
+      <button class="btn ghost" id="admin-toggle" hidden>Gérer</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <main id="main">
+    <div class="view" id="view-effectif" hidden>
+      <section class="pitch-sec" id="pitch-sec" aria-label="Onze type sur le terrain"></section>
+      <div class="all-head"><h2>Tous les joueurs</h2><span>Filtre et trie avec la barre ci-dessus</span></div>
+      <section id="admin-players" class="admin" hidden>
+        <strong>Ajouter un joueur</strong>
+        <form id="add-form">
+          <label for="add-num">N°<input id="add-num" type="number" min="1" max="99"></label>
+          <label for="add-name">Nom<input id="add-name" type="text" required maxlength="60" placeholder="Prénom Nom"></label>
+          <label for="add-pos">Poste
+            <select id="add-pos"><option value="G">Gardien</option><option value="D">Défenseur</option><option value="M">Milieu</option><option value="A">Attaquant</option></select>
+          </label>
+          <button class="btn primary" type="submit">Ajouter</button>
+        </form>
+        <label class="switch" for="show-photos"><input type="checkbox" id="show-photos"> Afficher les photos importées (sinon, maillots dessinés pour tout le monde)</label>
+        <span class="notice">Sur chaque carte : « Photo » pour importer une photo (JPEG, PNG ou WebP), « Retirer » pour enlever le joueur. Ses avis restent enregistrés.</span>
+      </section>
+      <div id="lines">
+        <div class="empty"><strong>Chargement de l'effectif…</strong>Les joueurs et les avis des supporters vont s'afficher ici.</div>
+      </div>
+    </div>
+    <div class="view" id="view-matchs" hidden>
+      <section id="admin-matches" class="admin" hidden>
+        <strong>Ajouter un match joué</strong>
+        <form id="match-form">
+          <label for="m-date">Date<input id="m-date" type="date" required></label>
+          <label for="m-comp">Compétition<input id="m-comp" type="text" required maxlength="40" placeholder="Ligue 1 · J7"></label>
+          <label for="m-opp">Adversaire<input id="m-opp" type="text" required maxlength="40" placeholder="Troyes"></label>
+          <label for="m-venue">Lieu
+            <select id="m-venue"><option value="H">Domicile</option><option value="A">Extérieur</option><option value="N">Terrain neutre</option></select>
+          </label>
+          <label for="m-gf">Buts Lens<input id="m-gf" type="number" min="0" max="20" required></label>
+          <label for="m-ga">Buts adv.<input id="m-ga" type="number" min="0" max="20" required></label>
+          <label for="m-stats">Lien des statistiques (facultatif)<input id="m-stats" type="text" maxlength="400" placeholder="https://www.rclens.fr/fr/…"></label>
+          <button class="btn primary" type="submit">Ajouter</button>
+        </form>
+      </section>
+      <div class="mlayout">
+        <div id="matches">
+          <div class="empty"><strong>Chargement des matchs…</strong>Les matchs joués cette saison vont s'afficher ici.</div>
+        </div>
+        <aside class="side" id="side" aria-label="Classement et performances"></aside>
+      </div>
+    </div>
+    <div class="view" id="view-performances" hidden>
+      <section class="perf" aria-labelledby="perf-title">
+        <div class="perf-hero">
+          <svg class="lamp" viewBox="0 0 120 220" role="img" aria-label="Lampe de mineur allumée">
+            <defs>
+              <radialGradient id="lg-halo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#FFC24A" stop-opacity=".75"/><stop offset=".45" stop-color="#FF8A1F" stop-opacity=".25"/><stop offset="1" stop-color="#FF8A1F" stop-opacity="0"/></radialGradient>
+              <linearGradient id="lg-brass" x1="0" x2="1"><stop offset="0" stop-color="#7A5A1E"/><stop offset=".35" stop-color="#E7C063"/><stop offset=".55" stop-color="#FFF0B8"/><stop offset=".75" stop-color="#C9973A"/><stop offset="1" stop-color="#6B4C16"/></linearGradient>
+              <linearGradient id="lg-flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF6A00"/><stop offset=".45" stop-color="#FFC21A"/><stop offset="1" stop-color="#FFF8D6"/></linearGradient>
+            </defs>
+            <circle class="halo" cx="60" cy="96" r="64" fill="url(#lg-halo)"/>
+            <circle cx="60" cy="14" r="8" fill="none" stroke="url(#lg-brass)" stroke-width="3"/>
+            <rect x="57" y="21" width="6" height="11" rx="1" fill="url(#lg-brass)"/>
+            <path d="M38 50 Q38 31 60 31 Q82 31 82 50 Z" fill="url(#lg-brass)"/>
+            <rect x="33" y="49" width="54" height="9" rx="2" fill="url(#lg-brass)"/>
+            <rect x="40" y="58" width="40" height="70" rx="3" fill="rgba(255,214,140,.16)" stroke="rgba(255,240,200,.35)" stroke-width="1"/>
+            <g class="flame"><path d="M60 76 C70 92 69 106 60 113 C51 106 50 92 60 76 Z" fill="url(#lg-flame)"/><path d="M60 92 C64 99 64 106 60 110 C56 106 56 99 60 92 Z" fill="#FFFBEA"/></g>
+            <rect x="58.5" y="111" width="3" height="8" fill="#3A2A14"/>
+            <g stroke="url(#lg-brass)" stroke-width="3.2" stroke-linecap="round"><line x1="36" y1="58" x2="36" y2="128"/><line x1="49" y1="58" x2="49" y2="128"/><line x1="71" y1="58" x2="71" y2="128"/><line x1="84" y1="58" x2="84" y2="128"/></g>
+            <rect x="32" y="127" width="56" height="10" rx="2" fill="url(#lg-brass)"/>
+            <path d="M35 137 H85 L89 186 Q60 197 31 186 Z" fill="url(#lg-brass)"/>
+            <path d="M33.5 152 H86.5 M32.5 170 H87.5" stroke="#5E4313" stroke-width="2" opacity=".6"/>
+          </svg>
+          <div>
+            <div class="eyebrow">RC Lens · Saison 2026-2027</div>
+            <h2 class="proud" id="perf-title"><span class="l1">Fiers d'être</span><span class="l2">Lensois</span></h2>
+            <p class="recap" id="perf-recap">Les meilleures performances des Sang et Or depuis le début de la saison.</p>
+          </div>
+          <div class="charb" aria-hidden="true">Charbonneurs</div>
+        </div>
+        <div class="stripes" aria-hidden="true"></div>
+        <div class="perf-body" id="perf-body">
+          <div class="empty-c">Chargement des performances…</div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <details class="credits" id="credits" hidden><summary>Crédits photos</summary><ul id="credits-list"></ul></details>
+    <p>Site de supporters non officiel, sans lien avec le Racing Club de Lens. Effectif d'après le site officiel du club, octobre 2026. Classement : rclens.fr. Les notes vont de 1 (catastrophique) à 10 (légendaire), comme dans les bulletins de match.</p>
+  </footer>
+</div>
+
+<input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" hidden>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="panel" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="p-name"></aside>
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="tip" id="tip" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script>
+(function () {
+  const POS = { G: "Gardien", D: "Défenseur", M: "Milieu", A: "Attaquant" };
+  const LINES = [["G", "Gardiens"], ["D", "Défenseurs"], ["M", "Milieux"], ["A", "Attaquants"]];
+  const VENUE = { H: "Domicile", A: "Extérieur", N: "Terrain neutre" };
+  const MAXC = 500;
+  const state = {
+    db: null, user: null, assets: null, me: null, canAdmin: false,
+    players: [], matches: [], reviews: {}, mreviews: {},
+    loaded: { players: false, reviews: false, matches: false, mreviews: false },
+    pseudos: {}, showPhotos: false, view: "performances", filter: "all", sort: "num", open: null, adminOpen: false,
+    draft: { n: null, c: "" }, mdraft: {}, writeBlocked: false, saving: false, failed: false
+  };
+  try { const s = localStorage.getItem("ase-sort"); if (s) state.sort = s; } catch (e) {}
+  document.getElementById("sort").value = state.sort;
+  if (location.hash === "#matchs") state.view = "matchs";
+  if (location.hash === "#effectif") state.view = "effectif";
+  if (location.hash === "#performances") state.view = "performances";
+
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => { t.hidden = true; }, 2600); }
+  function scoreClass(v) { if (v == null) return "s-none"; if (v >= 7) return "s-good"; if (v >= 5) return "s-mid"; return "s-bad"; }
+  function fmt(v) { return v == null ? "–" : v.toFixed(1).replace(".", ","); }
+  const okNote = (n) => typeof n === "number" && n >= 1 && n <= 10;
+  const validId = (s) => typeof s === "string" && /^[0-9a-f]{32}$/.test(s);
+  function avgOf(list) { if (!list || !list.length) return null; return list.reduce((s, x) => s + x.n, 0) / list.length; }
+  function dateFr(iso, opts) { const d = new Date(iso + "T12:00:00"); return isNaN(d) ? iso : d.toLocaleDateString("fr-FR", opts); }
+
+  // Avis de saison, groupés par joueur
+  function seasonAgg() {
+    const out = {};
+    for (const [uid, doc] of Object.entries(state.reviews)) {
+      const r = (doc && doc.r) || {};
+      for (const [pid, v] of Object.entries(r)) {
+        if (!v || !okNote(v.n)) continue;
+        (out[pid] = out[pid] || []).push({ uid, n: Math.round(v.n), c: typeof v.c === "string" ? v.c.slice(0, MAXC) : "", t: typeof v.t === "number" ? v.t : 0 });
+      }
+    }
+    for (const k in out) out[k].sort((a, b) => b.t - a.t);
+    return out;
+  }
+  // Notes de match : out[matchId] = { players: {pid: [{uid,n}]}, comments: [{uid,c,t}], voters: Set }
+  function matchAgg() {
+    const out = {};
+    for (const [uid, doc] of Object.entries(state.mreviews)) {
+      const m = (doc && doc.m) || {};
+      for (const [mid, v] of Object.entries(m)) {
+        if (!v) continue;
+        const o = out[mid] = out[mid] || { players: {}, comments: [], voters: new Set() };
+        let any = false;
+        for (const [pid, n] of Object.entries(v.p || {})) if (okNote(n)) { (o.players[pid] = o.players[pid] || []).push({ uid, n: Math.round(n) }); any = true; }
+        if (any) o.voters.add(uid);
+        if (typeof v.c === "string" && v.c.trim()) o.comments.push({ uid, c: v.c.slice(0, MAXC), t: typeof v.t === "number" ? v.t : 0 });
+      }
+    }
+    for (const k in out) out[k].comments.sort((a, b) => b.t - a.t);
+    return out;
+  }
+  // Moyenne en match d'un joueur : moyenne de ses moyennes par match
+  function playerMatchAvg(magg, pid) {
+    const per = [];
+    for (const mt of state.matches) { const l = magg[mt.id]?.players[pid]; if (l && l.length) per.push({ mid: mt.id, a: avgOf(l), n: l.length }); }
+    return { avg: per.length ? per.reduce((s, x) => s + x.a, 0) / per.length : null, per };
+  }
+  function motm(magg, mid) {
+    const pl = magg[mid]?.players || {}; let best = null;
+    for (const [pid, l] of Object.entries(pl)) { if (!state.players.find(p => p.id === pid)) continue; const a = avgOf(l); if (!best || a > best.a || (a === best.a && l.length > best.n)) best = { pid, a, n: l.length }; }
+    return best;
+  }
+  // ===== Statistiques de match (possession, tirs…) =====
+  const STATS = [
+    ["shots", "Tirs", (s) => s.totalShots],
+    ["onTarget", "Tirs cadrés", (s) => s.shotsOnTarget],
+    ["corners", "Corners", (s) => s.wonCorners],
+    ["passes", "Passes", (s) => s.totalPasses],
+    ["passPct", "Passes réussies", (s) => s.totalPasses ? Math.round(100 * s.accuratePasses / s.totalPasses) : null, "%"],
+    ["saves", "Arrêts du gardien", (s) => s.saves],
+    ["fouls", "Fautes", (s) => s.foulsCommitted],
+    ["offsides", "Hors-jeu", (s) => s.offsides],
+    ["yellow", "Cartons jaunes", (s) => s.yellowCards],
+    ["red", "Cartons rouges", (s) => s.redCards]
+  ];
+  const num = (v) => typeof v === "number" && isFinite(v) ? v : null;
+  function cleanStats(st) {
+    if (!st || typeof st !== "object" || !st.lens || !st.opp) return null;
+    const side = (o) => { const r = {}; for (const k of ["possessionPct", "totalShots", "shotsOnTarget", "wonCorners", "totalPasses", "accuratePasses", "foulsCommitted", "offsides", "saves", "yellowCards", "redCards"]) r[k] = num(o[k]); return r; };
+    return { lens: side(st.lens), opp: side(st.opp), source: typeof st.source === "string" ? st.source.slice(0, 40) : "", sourceUrl: safeUrl(st.sourceUrl) };
+  }
+  function splitBar(a, b, big) {
+    const s = el("div", "split" + (big ? " big" : "")); const t = a + b;
+    if (!t) return null;
+    const l = el("div", "l"), r = el("div", "r"); l.style.flex = String(a / t); r.style.flex = String(b / t);
+    s.append(l, r); return s;
+  }
+  function statsBox(m) {
+    const st = m.stats; const box = el("div", "box");
+    box.append(el("h4", null, "Statistiques du match"));
+    if (!st) { box.append(el("div", "notice", "Pas de statistiques pour ce match.")); return box; }
+    const wrap = el("div", "mstats"); wrap.setAttribute("role", "table"); wrap.setAttribute("aria-label", "Statistiques : Lens contre " + m.opp);
+    const teams = el("div", "teams"); const a = el("span"); a.append(el("i", "sw-lens"), document.createTextNode("Lens")); const b = el("span"); b.append(document.createTextNode(m.opp), el("i", "sw-opp")); teams.append(a, b); wrap.append(teams);
+    const pl = st.lens.possessionPct, po = st.opp.possessionPct;
+    if (pl != null && po != null) {
+      const row = el("div", "srow"); row.setAttribute("role", "row");
+      const v = el("div", "vals"); v.append(el("b", null, Math.round(pl) + " %"), el("span", null, "Possession"), el("b", null, Math.round(po) + " %"));
+      row.append(v); const sb = splitBar(pl, po, true); if (sb) row.append(sb); wrap.append(row);
+    }
+    for (const [, label, get, unit] of STATS) {
+      const x = get(st.lens), y = get(st.opp); if (x == null || y == null) continue;
+      const row = el("div", "srow"); row.setAttribute("role", "row");
+      const v = el("div", "vals"); v.append(el("b", null, x + (unit ? " " + unit : "")), el("span", null, label), el("b", null, y + (unit ? " " + unit : "")));
+      row.append(v);
+      const sb = splitBar(x, y, false); if (sb) row.append(sb);
+      wrap.append(row);
+    }
+    if (st.source) {
+      const src = el("div", "src"); src.append(document.createTextNode("Source : "));
+      if (st.sourceUrl) { const l = el("a", null, st.source); l.href = st.sourceUrl; l.target = "_blank"; l.rel = "noopener"; src.append(l); } else src.append(document.createTextNode(st.source));
+      wrap.append(src);
+    }
+    box.append(wrap); return box;
+  }
+  function statLink(m) {
+    const a = el("a", "statlink", "Résumé et composition sur rclens.fr ↗");
+    a.href = m.statsUrl; a.target = "_blank"; a.rel = "noopener";
+    a.title = "Ouvre la page du match sur " + new URL(m.statsUrl).hostname;
+    a.addEventListener("click", (e) => e.stopPropagation());
+    a.addEventListener("keydown", (e) => e.stopPropagation());
+    return a;
+  }
+  function result(m) { return m.gf > m.ga ? "V" : m.gf < m.ga ? "D" : "N"; }
+
+  // Maillot vu de dos : nom + numéro. Gardiens en vert, comme leur tenue.
+  const SVGNS = "http://www.w3.org/2000/svg";
+  function jersey(p, big) {
+    const gk = p.pos === "G";
+    const body = gk ? "#86D99A" : "#F5C400", trim = gk ? "#1E6B3A" : "#C8102E", ink = gk ? "#123D22" : "#C8102E";
+    const svg = document.createElementNS(SVGNS, "svg");
+    svg.setAttribute("viewBox", "0 0 100 100"); svg.setAttribute("class", "jersey" + (big ? " big" : "")); svg.setAttribute("aria-hidden", "true");
+    svg.innerHTML =
+      '<circle cx="50" cy="50" r="49" class="jz-bg"/>' +
+      '<path d="M37 17 L23 23 L9 39 L20 51 L31 43 L31 89 L69 89 L69 43 L80 51 L91 39 L77 23 L63 17 Q50 22 37 17 Z" fill="' + body + '"/>' +
+      '<path d="M9 39 L20 51 L24 47.5 L13 35.5 Z" fill="' + trim + '"/>' +
+      '<path d="M91 39 L80 51 L76 47.5 L87 35.5 Z" fill="' + trim + '"/>' +
+      '<path d="M37 17 Q50 22 63 17 L60.5 15.5 Q50 19 39.5 15.5 Z" fill="' + trim + '"/>' +
+      '<path d="M31 84 L69 84 L69 89 L31 89 Z" fill="' + trim + '" opacity=".9"/>';
+    const last = (p.name.split(" ").slice(1).join(" ") || p.name).toUpperCase();
+    const nm = document.createElementNS(SVGNS, "text");
+    nm.setAttribute("x", "50"); nm.setAttribute("y", "38"); nm.setAttribute("text-anchor", "middle"); nm.setAttribute("class", "jz-name"); nm.setAttribute("fill", ink);
+    nm.setAttribute("font-size", String(Math.min(9, 60 / Math.max(1, last.length * 0.62)).toFixed(1)));
+    nm.textContent = last;
+    const nb = document.createElementNS(SVGNS, "text");
+    nb.setAttribute("x", "50"); nb.setAttribute("y", "74"); nb.setAttribute("text-anchor", "middle"); nb.setAttribute("class", "jz-num"); nb.setAttribute("fill", ink);
+    nb.setAttribute("font-size", p.num ? "34" : "22");
+    nb.textContent = p.num ? String(p.num) : last.slice(0, 2);
+    svg.append(nm, nb);
+    return svg;
+  }
+  function photoEl(p, cls) {
+    if (!state.showPhotos) return null;
+    if (validId(p.photo)) { const i = el("img", cls); i.alt = ""; i.src = "/_blob/" + p.photo; i.loading = "lazy"; i.addEventListener("error", () => { i.replaceWith(numPh(p)); }); return i; }
+    return null;
+  }
+  function numPh(p) { return jersey(p, false); }
+  // Mention obligatoire des licences libres : auteur, licence, lien vers la source
+  function creditEl(p, tag) {
+    const c = p.credit; if (!c) return null;
+    const e = el(tag || "div", "credit");
+    e.append(document.createTextNode("Photo : " + (c.author || "auteur inconnu") + " · "));
+    const lic = c.licenseUrl && /^https:\/\//.test(c.licenseUrl) ? el("a", null, c.license) : el("span", null, c.license);
+    if (lic.tagName === "A") { lic.href = c.licenseUrl; lic.target = "_blank"; lic.rel = "noopener"; }
+    e.append(lic);
+    if (c.source && /^https:\/\/commons\.wikimedia\.org\//.test(c.source)) {
+      e.append(document.createTextNode(" · "));
+      const s = el("a", null, "Wikimedia Commons"); s.href = c.source; s.target = "_blank"; s.rel = "noopener"; e.append(s);
+    }
+    if (c.modified) e.append(document.createTextNode(" · recadrée"));
+    return e;
+  }
+  function renderCredits() {
+    const list = state.showPhotos ? state.players.filter(p => validId(p.photo) && p.credit).sort((a, b) => a.name.localeCompare(b.name, "fr")) : [];
+    $("credits").hidden = !list.length;
+    $("credits-list").replaceChildren(...list.map(p => { const li = el("li"); li.append(el("strong", null, p.name + " : ")); const c = creditEl(p, "span"); li.append(c); return li; }));
+  }
+
+  // ===== Rendu général =====
+  function render() {
+    const sagg = seasonAgg(), magg = matchAgg();
+    const fans = new Set();
+    Object.values(sagg).forEach(l => l.forEach(x => fans.add(x.uid)));
+    Object.values(magg).forEach(o => o.voters.forEach(u => fans.add(u)));
+    if (state.loaded.players) $("st-players").textContent = state.players.length;
+    if (state.loaded.matches) $("st-matches").textContent = state.matches.length;
+    if (state.loaded.reviews && state.loaded.mreviews) $("st-fans").textContent = fans.size;
+
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.v === state.view)));
+    $("view-effectif").hidden = state.view !== "effectif";
+    $("view-matchs").hidden = state.view !== "matchs";
+    $("view-performances").hidden = state.view !== "performances";
+    $("admin-toggle").style.visibility = state.view === "performances" ? "hidden" : "";
+    $("chips").hidden = state.view !== "effectif";
+    $("sort-wrap").hidden = state.view !== "effectif";
+    $("admin-toggle").hidden = !state.canAdmin;
+    $("admin-toggle").textContent = state.adminOpen ? "Terminer" : (state.view === "matchs" ? "Gérer les matchs" : "Gérer l'effectif");
+    $("admin-players").hidden = !(state.canAdmin && state.adminOpen && state.view === "effectif");
+    $("show-photos").checked = state.showPhotos;
+    $("admin-matches").hidden = !(state.canAdmin && state.adminOpen && state.view === "matchs");
+
+    if (state.failed) {
+      const msg = () => emptyMsg("Impossible de charger les données", "Vérifie ta connexion internet, puis recharge la page.");
+      $("lines").replaceChildren(msg()); $("matches").replaceChildren(msg()); return;
+    }
+    renderPitch(sagg);
+    renderPlayers(sagg, magg);
+    renderMatches(magg);
+    renderSide(magg);
+    renderPerf(sagg);
+    renderCredits();
+    if (state.open) {
+      if (state.open.type === "player") renderPlayerPanel(sagg, magg);
+      else renderMatchPanel(magg);
+    }
+  }
+  function emptyMsg(t, s) { const d = el("div", "empty"); d.append(el("strong", null, t), document.createTextNode(s)); return d; }
+
+  // ===== Terrain : onze type en 3-4-2-1 (Lens attaque vers le haut) =====
+  const SLOTS = {
+    "G": [50, 89], "CD-L": [24, 73], "CD": [50, 75], "CD-R": [76, 73],
+    "LM": [11, 48], "CM-L": [37, 53], "CM-R": [63, 53], "RM": [89, 48],
+    "CF-L": [30, 28], "CF-R": [70, 28], "F": [50, 12]
+  };
+  function pitchLines() {
+    const s = svgEl("svg", { viewBox: "0 0 68 96", preserveAspectRatio: "none", class: "lines", "aria-hidden": "true" });
+    s.innerHTML =
+      '<rect x="2" y="2" width="64" height="92"/><line x1="2" y1="48" x2="66" y2="48"/><circle cx="34" cy="48" r="8"/><circle class="spot" cx="34" cy="48" r=".6"/>' +
+      '<rect x="15" y="2" width="38" height="15"/><rect x="25" y="2" width="18" height="5"/><circle class="spot" cx="34" cy="12" r=".5"/><path d="M27 17 A8 8 0 0 0 41 17"/>' +
+      '<rect x="15" y="79" width="38" height="15"/><rect x="25" y="89" width="18" height="5"/><circle class="spot" cx="34" cy="84" r=".5"/><path d="M27 79 A8 8 0 0 1 41 79"/>';
+    return s;
+  }
+  // Une pastille par match officiel : pleine = titulaire, cercle = entré en jeu, petit point = pas joué
+  function usageText(p) {
+    if (p.apps == null) return "";
+    if (!p.apps) return "N'a pas encore joué";
+    const sub = p.apps - (p.starts || 0);
+    return (p.starts || 0) + " fois titulaire" + (sub ? ", " + sub + " fois entré en jeu" : "") + " sur " + state.matches.length + " matchs";
+  }
+  function usageDots(p, big) {
+    const n = Math.max(state.matches.length, p.apps || 0), st = p.starts || 0, ap = p.apps || 0;
+    const d = el("span", "dots" + (big ? " big" : "")); d.setAttribute("role", "img"); d.setAttribute("aria-label", usageText(p));
+    d.title = usageText(p);
+    for (let i = 0; i < n; i++) d.append(el("i", i < st ? "s" : i < ap ? "c" : "n"));
+    return d;
+  }
+  function dotsLegend() {
+    const lg = el("div", "dots-legend");
+    for (const [c, t] of [["s", "Titulaire"], ["c", "Entré en jeu"], ["n", "Pas joué"]]) { const s = el("span"); const d = el("span", "dots"); d.append(el("i", c)); s.append(d, document.createTextNode(t)); lg.append(s); }
+    return lg;
+  }
+  function tokenAvatar(p) { return photoEl(p, "tokph") || jersey(p, false); }
+  function renderPitch(sagg) {
+    const sec = $("pitch-sec");
+    if (!state.loaded.players || !state.players.length) { sec.replaceChildren(); return; }
+    const fm = state.formation || {};
+    const xi = state.players.filter(p => p.slot);
+    const bench = state.players.filter(p => !p.slot).sort((a, b) => (b.apps || 0) - (a.apps || 0) || (b.starts || 0) - (a.starts || 0) || "GDMA".indexOf(a.pos) - "GDMA".indexOf(b.pos));
+    const head = el("div", "pitch-head");
+    head.append(el("h2", null, "Onze type"), el("span", null, (fm.text || "Les joueurs les plus souvent titulaires, à leur poste habituel") + ". Clique sur un joueur pour le noter."));
+    const pitch = el("div", "pitch"); pitch.append(pitchLines());
+    if (fm.name) pitch.append(el("div", "fm", fm.name));
+    const used = {};
+    for (const p of xi) {
+      const base = SLOTS[p.slot]; const k = used[p.slot] = (used[p.slot] || 0) + 1;
+      const t = el("button", "tok"); t.type = "button";
+      t.style.left = (base[0] + (k - 1) * 8) + "%"; t.style.top = base[1] + "%";
+      const av = el("div", "av"); av.append(tokenAvatar(p));
+      const a = avgOf(sagg[p.id]); if (a != null) av.append(el("span", "rt", fmt(a)));
+      const last = p.name.split(" ").slice(1).join(" ") || p.name;
+      t.append(av, el("span", "nm", last));
+      t.setAttribute("aria-label", p.name + ", " + POS[p.pos] + (a != null ? ", note " + fmt(a) : "") + (p.starts != null ? ", " + p.starts + " titularisations" : ""));
+      t.addEventListener("click", () => openPanel({ type: "player", id: p.id }));
+      pitch.append(t);
+    }
+    const bx = el("div", "bench");
+    bx.append(el("h3", null, "Le banc"), el("div", "sub", "Remplaçants et joueurs en rotation, du plus utilisé au moins utilisé"));
+    const bl = el("div", "bench-list");
+    for (const p of bench) {
+      const t = el("button", "btok"); t.type = "button";
+      const av = el("div", "av"); av.append(tokenAvatar(p));
+      const a = avgOf(sagg[p.id]); if (a != null) av.append(el("span", "rt", fmt(a)));
+      const last = p.name.split(" ").slice(1).join(" ") || p.name;
+      t.append(av, el("span", "nm", last), p.apps != null ? usageDots(p, false) : el("small", null, POS[p.pos]));
+      t.setAttribute("aria-label", p.name + ", " + POS[p.pos] + (p.apps != null ? ", " + usageText(p) : ""));
+      t.addEventListener("click", () => openPanel({ type: "player", id: p.id }));
+      bl.append(t);
+    }
+    const lg = dotsLegend(); lg.prepend(el("span", null, "Une pastille par match :"));
+    bx.append(bl, lg);
+    sec.replaceChildren(head, pitch, bx);
+  }
+
+  function renderPlayers(sagg, magg) {
+    const box = $("lines");
+    if (!state.loaded.players) return;
+    if (!state.players.length) { box.replaceChildren(emptyMsg("L'effectif n'est pas encore chargé", state.canAdmin ? "Ajoute le premier joueur avec « Gérer l'effectif »." : "Les joueurs apparaîtront ici dès que l'effectif sera publié.")); return; }
+    const frag = document.createDocumentFragment();
+    const mAvg = {}; state.players.forEach(p => { mAvg[p.id] = playerMatchAvg(magg, p.id).avg; });
+    for (const [code, label] of LINES) {
+      if (state.filter !== "all" && state.filter !== code) continue;
+      const list = state.players.filter(p => p.pos === code);
+      if (!list.length) continue;
+      list.sort((a, b) => {
+        if (state.sort === "avg") { const d = (avgOf(sagg[b.id]) ?? -1) - (avgOf(sagg[a.id]) ?? -1); if (d) return d; }
+        if (state.sort === "match") { const d = (mAvg[b.id] ?? -1) - (mAvg[a.id] ?? -1); if (d) return d; }
+        if (state.sort === "count") { const d = (sagg[b.id]?.length || 0) - (sagg[a.id]?.length || 0); if (d) return d; }
+        return (a.num || 999) - (b.num || 999) || a.name.localeCompare(b.name, "fr");
+      });
+      const sec = el("section"); const head = el("div", "line-head");
+      head.append(el("h2", null, label), el("span", null, list.length + " joueur" + (list.length > 1 ? "s" : "")));
+      const grid = el("div", "grid");
+      for (const p of list) grid.append(playerCard(p, sagg[p.id] || [], mAvg[p.id]));
+      sec.append(head, grid); frag.append(sec);
+    }
+    box.replaceChildren(frag);
+  }
+
+  function playerCard(p, list, mavg) {
+    const c = el("div", "card"); c.tabIndex = 0; c.setAttribute("role", "button");
+    c.setAttribute("aria-label", p.name + ", " + POS[p.pos] + ", voir les avis");
+    const a = avgOf(list);
+    const av = el("div", "avatar");
+    const ph = photoEl(p, "ph");
+    if (ph) { av.append(ph); if (p.num) av.append(el("span", "badge", String(p.num))); } else av.append(numPh(p));
+    c.append(av);
+    const who = el("div", "who"); who.append(el("div", "name", p.name), el("div", "pos", POS[p.pos] + (mavg != null ? " · match " + fmt(mavg) : ""))); c.append(who);
+    const sc = el("div", "score"); sc.append(el("b", scoreClass(a), fmt(a)), el("small", null, list.length ? list.length + " avis" : "Pas d'avis")); c.append(sc);
+    const mine = state.me && list.find(x => x.uid === state.me);
+    if (mine) c.append(el("div", "mine-tag", "Ta note de saison : " + mine.n + "/10"));
+    const open = () => openPanel({ type: "player", id: p.id });
+    c.addEventListener("click", open);
+    c.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target === c) { e.preventDefault(); open(); } });
+    if (state.canAdmin && state.adminOpen) {
+      const row = el("div", "admin-row");
+      if (state.assets) {
+        const up = el("button", "btn small", p.photo ? "Changer la photo" : "Photo"); up.type = "button";
+        up.addEventListener("click", (e) => { e.stopPropagation(); pickPhoto(p); });
+        row.append(up);
+        if (p.photo) { const rm = el("button", "btn small danger", "Enlever la photo"); rm.type = "button"; rm.addEventListener("click", (e) => { e.stopPropagation(); armed(rm, "Confirmer ?", () => removePhoto(p)); }); row.append(rm); }
+      }
+      const del = el("button", "btn small danger", "Retirer"); del.type = "button";
+      del.addEventListener("click", (e) => { e.stopPropagation(); armed(del, "Confirmer le retrait ?", async () => { try { await state.db.doc("players/" + p.id).delete(); toast(p.name + " retiré de l'effectif"); } catch (err) { toast("Impossible de retirer ce joueur. Réessaie."); } }); });
+      row.append(del);
+      c.append(row);
+    }
+    return c;
+  }
+  function armed(btn, label, fn) { if (btn.dataset.armed) fn(); else { btn.dataset.armed = "1"; btn.textContent = label; } }
+
+  function renderMatches(magg) {
+    const box = $("matches");
+    if (!state.loaded.matches) return;
+    if (!state.matches.length) { box.replaceChildren(emptyMsg("Aucun match pour l'instant", state.canAdmin ? "Ajoute un match joué avec « Gérer les matchs »." : "Les matchs joués apparaîtront ici.")); return; }
+    const listEl = el("div", "match-list");
+    for (const m of state.matches) {
+      const c = el("div", "match"); c.tabIndex = 0; c.setAttribute("role", "button");
+      const d = el("div", "mdate"); d.append(el("b", null, dateFr(m.date, { day: "numeric" })), el("span", null, dateFr(m.date, { month: "short" })));
+      const mid = el("div"); mid.style.minWidth = "0";
+      mid.append(el("div", "mcomp", m.comp + " · " + VENUE[m.venue]));
+      const teams = el("div", "mteams");
+      const lens = el("span", "lens", "Lens"), opp = el("span", null, m.opp);
+      if (m.venue === "A") teams.append(opp, document.createTextNode(" – "), lens); else teams.append(lens, document.createTextNode(" – "), opp);
+      mid.append(teams);
+      const res = el("div", "mres");
+      const r = result(m);
+      res.append(el("span", "mscore", m.venue === "A" ? m.ga + "-" + m.gf : m.gf + "-" + m.ga), el("span", "pill " + r, r === "V" ? "Victoire" : r === "D" ? "Défaite" : "Nul"));
+      const foot = el("div", "mfoot");
+      const o = magg[m.id]; const best = motm(magg, m.id);
+      if (o && o.voters.size) {
+        foot.append(document.createTextNode(o.voters.size + " supporter" + (o.voters.size > 1 ? "s ont" : " a") + " noté ce match"));
+        if (best) { const bp = state.players.find(p => p.id === best.pid); foot.append(document.createTextNode(" · Homme du match : ")); foot.append(el("b", null, bp.name + " (" + fmt(best.a) + ")")); }
+      } else foot.textContent = "Personne n'a encore noté ce match. Clique pour noter les joueurs.";
+      if (m.stats && m.stats.lens.possessionPct != null) foot.append(document.createTextNode(" · Possession " + Math.round(m.stats.lens.possessionPct) + " % · Tirs " + m.stats.lens.totalShots + "-" + m.stats.opp.totalShots));
+      const myDoc = state.me && state.mreviews[state.me]?.m?.[m.id];
+      if (myDoc && Object.values(myDoc.p || {}).some(okNote)) foot.append(document.createTextNode(" · Tu l'as noté"));
+      c.append(d, mid, res, foot);
+      if (m.statsUrl) { const lk = el("div", "mlinks"); lk.append(statLink(m)); c.append(lk); }
+      const open = () => openPanel({ type: "match", id: m.id });
+      c.addEventListener("click", open);
+      c.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target === c) { e.preventDefault(); open(); } });
+      if (state.canAdmin && state.adminOpen) {
+        const row = el("div", "admin-row");
+        const del = el("button", "btn small danger", "Supprimer le match"); del.type = "button";
+        del.addEventListener("click", (e) => { e.stopPropagation(); armed(del, "Confirmer ?", async () => { try { await state.db.doc("matches/" + m.id).delete(); toast("Match supprimé"); } catch (err) { toast("Impossible de supprimer ce match."); } }); });
+        row.append(del); c.append(row);
+      }
+      listEl.append(c);
+    }
+    box.replaceChildren(listEl);
+  }
+
+  // ===== Colonne latérale : classement, forme, graphiques =====
+  const tip = $("tip");
+  function showTip(e, text) { tip.textContent = text; tip.hidden = false; const x = Math.min(e.clientX + 12, window.innerWidth - 230); tip.style.left = x + "px"; tip.style.top = (e.clientY + 14) + "px"; }
+  function hideTip() { tip.hidden = true; }
+  function svgEl(tag, attrs, text) { const n = document.createElementNS(SVGNS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text != null) n.textContent = text; return n; }
+  function hoverable(node, text) {
+    node.addEventListener("mousemove", (e) => showTip(e, text)); node.addEventListener("mouseleave", hideTip);
+    node.setAttribute("tabindex", "0"); node.setAttribute("aria-label", text);
+    node.addEventListener("focus", () => { const r = node.getBoundingClientRect(); showTip({ clientX: r.left, clientY: r.bottom }, text); }); node.addEventListener("blur", hideTip);
+  }
+  const short = (s) => s.replace(/^(Olympique|AS|FC|RC|Stade)\s+/i, "").replace(/[^A-Za-zÀ-ÿ]/g, "").slice(0, 3).toUpperCase();
+  // Note moyenne de l'équipe sur un match = moyenne de toutes les notes données aux joueurs
+  function teamAvg(magg, mid) {
+    const pl = magg[mid]?.players || {}; let s = 0, n = 0;
+    for (const [pid, l] of Object.entries(pl)) { if (!state.players.find(p => p.id === pid)) continue; for (const r of l) { s += r.n; n++; } }
+    return n ? { a: s / n, n, voters: magg[mid].voters.size } : null;
+  }
+
+  function renderSide(magg) {
+    const side = $("side");
+    if (state.view !== "matchs" || !state.loaded.matches) return;
+    const nodes = [];
+    const chrono = state.matches.slice().reverse();
+    const last = state.matches[0];
+
+    // 1. Performance : note de l'équipe match par match
+    const perf = el("div", "box");
+    perf.append(el("h3", null, "Performance de l'équipe"), el("div", "sub", "Note moyenne donnée par les supporters à l'ensemble des joueurs, match par match"));
+    const series = chrono.map(m => ({ m, t: teamAvg(magg, m.id) }));
+    const rated = series.filter(x => x.t);
+    const seasonAvg = rated.length ? rated.reduce((s, x) => s + x.t.a, 0) / rated.length : null;
+    const lastT = last ? teamAvg(magg, last.id) : null;
+    const kp = el("div", "kpis");
+    const k1 = el("div", "kpi"); k1.append(el("b", scoreClass(lastT?.a), fmt(lastT?.a ?? null)), el("span", null, last ? "Dernier match · " + (last.venue === "A" ? "à " : "vs ") + last.opp : "Dernier match"));
+    if (lastT && seasonAvg != null) { const d = lastT.a - seasonAvg; const dd = el("div", "delta " + (d >= 0 ? "s-good" : "s-bad"), (d >= 0 ? "▲ +" : "▼ ") + fmt(d) + " vs moyenne"); k1.append(dd); }
+    const k2 = el("div", "kpi"); k2.append(el("b", scoreClass(seasonAvg), fmt(seasonAvg)), el("span", null, "Moyenne depuis le début de saison"));
+    kp.append(k1, k2); perf.append(kp);
+    if (!rated.length) perf.append(el("div", "chart-empty", "Le graphique apparaîtra dès que des supporters auront noté les joueurs d'un match."));
+    else {
+      const W = 340, H = 170, L = 22, R = 6, T = 14, B = 22, iw = W - L - R, ih = H - T - B;
+      const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "chart", role: "img", "aria-label": "Note moyenne de l'équipe par match, de 1 à 10" });
+      const y = (v) => T + ih - (v / 10) * ih;
+      for (const v of [0, 5, 10]) { svg.append(svgEl("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), class: "grid-l" }), svgEl("text", { x: L - 5, y: y(v) + 3, "text-anchor": "end", class: "axis-t" }, String(v))); }
+      const n = series.length, slot = iw / n, bw = Math.min(22, slot - 4);
+      series.forEach((x, i) => {
+        const cx = L + slot * i + slot / 2;
+        svg.append(svgEl("text", { x: cx, y: H - 6, "text-anchor": "middle", class: "axis-t" }, short(x.m.opp)));
+        if (!x.t) return;
+        const top = y(x.t.a), h = T + ih - top, isLast = x.m.id === last.id;
+        const r = Math.min(4, bw / 2, h);
+        svg.append(svgEl("path", { class: "bar" + (isLast ? " hl" : ""), d: `M${cx - bw / 2},${T + ih} V${top + r} Q${cx - bw / 2},${top} ${cx - bw / 2 + r},${top} H${cx + bw / 2 - r} Q${cx + bw / 2},${top} ${cx + bw / 2},${top + r} V${T + ih} Z` }));
+        if (isLast) svg.append(svgEl("text", { x: cx, y: top - 4, "text-anchor": "middle", class: "val-t" }, fmt(x.t.a)));
+        const hit = svgEl("rect", { x: cx - slot / 2, y: T, width: slot, height: ih, class: "hit" });
+        hoverable(hit, `${x.m.venue === "A" ? x.m.opp + " – Lens" : "Lens – " + x.m.opp} (${x.m.venue === "A" ? x.m.ga + "-" + x.m.gf : x.m.gf + "-" + x.m.ga}), ${dateFr(x.m.date, { day: "numeric", month: "short" })} : ${fmt(x.t.a)}/10, ${x.t.voters} supporter${x.t.voters > 1 ? "s" : ""}`);
+        svg.append(hit);
+      });
+      if (seasonAvg != null) {
+        svg.append(svgEl("line", { x1: L, x2: W - R, y1: y(seasonAvg), y2: y(seasonAvg), class: "avg-l" }));
+      }
+      perf.append(svg);
+      const lg = el("div", "legend"); const a = el("span"); a.append(el("i", "lb"), document.createTextNode("Dernier match")); const b = el("span"); b.append(el("i", "la"), document.createTextNode("Moyenne de la saison (" + fmt(seasonAvg) + ")")); lg.append(a, b); perf.append(lg);
+    }
+    nodes.push(perf);
+
+    // 2. Dernier match : chaque joueur vs sa moyenne de saison
+    if (last) {
+      const box = el("div", "box");
+      box.append(el("h3", null, "Joueurs au dernier match"), el("div", "sub", (last.venue === "A" ? last.opp + " – Lens " + last.ga + "-" + last.gf : "Lens – " + last.opp + " " + last.gf + "-" + last.ga) + " · " + dateFr(last.date, { day: "numeric", month: "long" })));
+      const pl = magg[last.id]?.players || {};
+      const rows = Object.entries(pl).map(([pid, l]) => ({ p: state.players.find(x => x.id === pid), a: avgOf(l), n: l.length })).filter(r => r.p).sort((a, b) => b.a - a.a);
+      if (!rows.length) box.append(el("div", "chart-empty", "Personne n'a encore noté les joueurs de ce match. Clique sur le match pour être le premier."));
+      else {
+        const rh = 22, L = 104, R = 34, T = 4, W = 340, H = T + rows.length * rh + 18, iw = W - L - R;
+        const svg = svgEl("svg", { viewBox: `0 0 ${W} ${H}`, class: "chart", role: "img", "aria-label": "Note de chaque joueur au dernier match, comparée à sa moyenne en match sur la saison" });
+        const x = (v) => L + (v / 10) * iw;
+        for (const v of [0, 5, 10]) svg.append(svgEl("line", { x1: x(v), x2: x(v), y1: T, y2: H - 16, class: "grid-l" }), svgEl("text", { x: x(v), y: H - 4, "text-anchor": "middle", class: "axis-t" }, String(v)));
+        rows.forEach((r, i) => {
+          const cy = T + i * rh + rh / 2, bh = 12, w = x(r.a) - L, rr = Math.min(4, w);
+          const last2 = r.p.name.split(" ").slice(1).join(" ") || r.p.name;
+          svg.append(svgEl("text", { x: L - 6, y: cy + 3.5, "text-anchor": "end", class: "axis-t" }, last2.length > 16 ? last2.slice(0, 15) + "…" : last2));
+          svg.append(svgEl("path", { class: "bar hl", d: `M${L},${cy - bh / 2} H${L + w - rr} Q${L + w},${cy - bh / 2} ${L + w},${cy - bh / 2 + rr} V${cy + bh / 2 - rr} Q${L + w},${cy + bh / 2} ${L + w - rr},${cy + bh / 2} H${L} Z` }));
+          svg.append(svgEl("text", { x: W - 2, y: cy + 3.5, "text-anchor": "end", class: "val-t" }, fmt(r.a)));
+          const sm = playerMatchAvg(magg, r.p.id).avg;
+          if (sm != null) svg.append(svgEl("line", { x1: x(sm), x2: x(sm), y1: cy - 8, y2: cy + 8, class: "tick" }));
+          const hit = svgEl("rect", { x: 0, y: cy - rh / 2, width: W, height: rh, class: "hit" });
+          hoverable(hit, `${r.p.name} : ${fmt(r.a)}/10 au dernier match (${r.n} note${r.n > 1 ? "s" : ""})` + (sm != null ? ` · moyenne en match sur la saison ${fmt(sm)}` : ""));
+          svg.append(hit);
+        });
+        box.append(svg);
+        const lg = el("div", "legend"); const a = el("span"); a.append(el("i", "lb"), document.createTextNode("Dernier match")); const b = el("span"); b.append(el("i", "lt"), document.createTextNode("Sa moyenne de saison")); lg.append(a, b); box.append(lg);
+      }
+      nodes.push(box);
+    }
+
+    // 2b. Statistiques : dernier match comparé à la moyenne de la saison
+    const withStats = state.matches.filter(m => m.stats);
+    if (last && last.stats && withStats.length) {
+      const sbox = el("div", "box");
+      sbox.append(el("h3", null, "Stats de l'équipe"), el("div", "sub", "Dernier match comparé à la moyenne des " + withStats.length + " matchs de la saison · source ESPN"));
+      const rowsDef = [["Possession", (s) => s.possessionPct, "%"], ["Tirs", (s) => s.totalShots], ["Tirs cadrés", (s) => s.shotsOnTarget], ["Corners", (s) => s.wonCorners], ["Passes réussies", (s) => s.totalPasses ? 100 * s.accuratePasses / s.totalPasses : null, "%"], ["Tirs concédés", (s, o) => o.totalShots, null, true], ["Fautes", (s) => s.foulsCommitted, null, true]];
+      const t = el("table", "cmp"); const hr = el("tr"); ["", "Dernier", "Moyenne"].forEach(h => { const th = el("th", null, h); th.scope = "col"; hr.append(th); }); const th = el("thead"); th.append(hr); t.append(th);
+      const tb = el("tbody");
+      for (const [label, get, unit, lowerBetter] of rowsDef) {
+        const vals = withStats.map(m => get(m.stats.lens, m.stats.opp)).filter(v => v != null);
+        const lv = get(last.stats.lens, last.stats.opp); if (lv == null || !vals.length) continue;
+        const avg = vals.reduce((s, v) => s + v, 0) / vals.length;
+        const f = (v) => (unit === "%" ? Math.round(v) + " %" : (Number.isInteger(v) ? String(v) : v.toFixed(1).replace(".", ",")));
+        const better = lowerBetter ? lv < avg : lv > avg;
+        const tr = el("tr"); tr.append(el("td", null, label), el("td", Math.abs(lv - avg) < 0.05 ? null : (better ? "up" : "down"), (Math.abs(lv - avg) < 0.05 ? "" : (better ? "▲ " : "▼ ")) + f(lv)), el("td", null, f(avg)));
+        tb.append(tr);
+      }
+      t.append(tb); sbox.append(t);
+      sbox.append(el("div", "sub", "▲ mieux que la moyenne · ▼ moins bien"));
+      nodes.push(sbox);
+    }
+
+    // 3. Forme : 5 derniers résultats
+    const fbox = el("div", "box");
+    fbox.append(el("h3", null, "Forme"), el("div", "sub", "5 derniers matchs, toutes compétitions, du plus ancien au plus récent"));
+    const form = el("div", "form");
+    for (const m of state.matches.slice(0, 5).reverse()) {
+      const r = result(m); const s = el("span", r, r);
+      hoverable(s, `${m.comp} : ${m.venue === "A" ? m.opp + " – Lens " + m.ga + "-" + m.gf : "Lens – " + m.opp + " " + m.gf + "-" + m.ga}`);
+      form.append(s);
+    }
+    fbox.append(form); nodes.push(fbox);
+
+    // 4. Classement de Ligue 1
+    const st = state.standings;
+    const cbox = el("div", "box");
+    cbox.append(el("h3", null, "Classement Ligue 1"));
+    if (!st || !Array.isArray(st.rows) || !st.rows.length) cbox.append(el("div", "chart-empty", "Le classement n'est pas encore disponible."));
+    else {
+      cbox.append(el("div", "sub", (st.label || "") + (st.source ? " · source : " + st.source : "")));
+      const wrap = el("div", "tbl-wrap"); const t = el("table", "rank");
+      const thead = el("thead"); const hr = el("tr");
+      [["#", "Place"], ["Équipe", "Équipe"], ["J", "Matchs joués"], ["Diff", "Différence de buts"], ["Pts", "Points"]].forEach(([a, b]) => { const th = el("th", null, a); th.title = b; th.scope = "col"; hr.append(th); });
+      thead.append(hr); t.append(thead);
+      const tb = el("tbody");
+      for (const r of st.rows.slice(0, 20)) {
+        if (!Array.isArray(r)) continue;
+        const tr = el("tr", /lens/i.test(String(r[1])) ? "me" : null);
+        [r[0], r[1], r[3], r[9], r[2]].forEach((v, i) => tr.append(el("td", i === 4 ? "pts" : null, String(v ?? ""))));
+        tb.append(tr);
+      }
+      t.append(tb); wrap.append(t); cbox.append(wrap);
+    }
+    nodes.push(cbox);
+
+    side.replaceChildren(...nodes);
+  }
+
+  // ===== Performances : bilan, star de la saison, classements =====
+  function renderPerf(sagg) {
+    if (state.view !== "performances" || !state.loaded.players || !state.loaded.matches) return;
+    const ms = state.matches, perf = state.perf;
+    const w = ms.filter(m => m.gf > m.ga).length, d = ms.filter(m => m.gf === m.ga).length, l = ms.length - w - d;
+    const gf = ms.reduce((s, m) => s + m.gf, 0), ga = ms.reduce((s, m) => s + m.ga, 0);
+    const ws = ms.filter(m => m.stats);
+    const poss = ws.length ? ws.reduce((s, m) => s + (m.stats.lens.possessionPct || 0), 0) / ws.length : null;
+    const shots = ws.length ? ws.reduce((s, m) => s + (m.stats.lens.totalShots || 0), 0) / ws.length : null;
+    const best = ms.slice().sort((a, b) => (b.gf - b.ga) - (a.gf - a.ga) || b.gf - a.gf)[0];
+    const clean = ms.filter(m => m.ga === 0).length;
+    $("perf-recap").replaceChildren(document.createTextNode("Après " + ms.length + " matchs officiels : "), el("b", null, w + " victoire" + (w > 1 ? "s" : "") + ", " + d + " nul" + (d > 1 ? "s" : "") + ", " + l + " défaite" + (l > 1 ? "s" : "")), document.createTextNode(". Les meilleures performances des Sang et Or depuis le début de la saison."));
+
+    const body = $("perf-body"); const nodes = [];
+    const P = (id) => state.players.find(p => p.id === id);
+    const open = (p) => () => openPanel({ type: "player", id: p.id });
+    const lastName = (p) => p.name.split(" ").slice(1).join(" ") || p.name;
+
+    // Bilan de l'équipe
+    const kh = el("div"); kh.append(el("h3", null, "Le bilan de l'équipe"));
+    const kr = el("div", "kpi-row");
+    const tile = (big, label, small) => { const t = el("div", "ktile"); const b = el("b"); if (typeof big === "string") b.textContent = big; else b.append(...big); t.append(b, el("span", null, label)); if (small) t.append(el("small", null, small)); return t; };
+    kr.append(tile([el("em", null, String(w)), document.createTextNode("-" + d + "-" + l)], "Victoires · nuls · défaites"));
+    kr.append(tile(String(gf), "Buts marqués", (gf / Math.max(1, ms.length)).toFixed(1).replace(".", ",") + " par match"));
+    kr.append(tile(String(ga), "Buts encaissés", clean + " match" + (clean > 1 ? "s" : "") + " sans encaisser"));
+    if (poss != null) kr.append(tile(Math.round(poss) + " %", "Possession moyenne"));
+    if (shots != null) kr.append(tile(shots.toFixed(1).replace(".", ","), "Tirs par match"));
+    if (best) kr.append(tile(best.venue === "A" ? best.ga + "-" + best.gf : best.gf + "-" + best.ga, "Plus belle victoire", (best.venue === "A" ? best.opp + " – Lens" : "Lens – " + best.opp) + " · " + best.comp));
+    kh.append(kr); nodes.push(kh);
+
+    const boards = perf && Array.isArray(perf.boards) ? perf.boards : [];
+    const goals = boards.find(b => b.key === "goals"), assists = boards.find(b => b.key === "assists");
+    const top = goals && goals.rows[0] && P(goals.rows[0][0]);
+    if (top) {
+      const sh = el("div"); sh.append(el("h3", null, "La lampe de la saison"));
+      const s = el("button", "star"); s.type = "button"; s.addEventListener("click", open(top));
+      const av = el("div", "av"); av.append(tokenAvatar(top));
+      const mid = el("div"); const asg = assists && assists.rows.find(r => r[0] === top.id);
+      mid.append(el("div", "lbl", "Meilleur buteur"), el("div", "nm", top.name), el("div", "more", POS[top.pos] + (asg ? " · " + asg[1] + " passe" + (asg[1] > 1 ? "s" : "") + " décisive" + (asg[1] > 1 ? "s" : "") : "") + (top.starts ? " · " + top.starts + " titularisations" : "")));
+      const big = el("div", "big", String(goals.rows[0][1])); big.append(el("small", null, goals.rows[0][1] > 1 ? "buts" : "but"));
+      s.append(av, mid, big); s.setAttribute("aria-label", "Meilleur buteur : " + top.name + ", " + goals.rows[0][1] + " buts");
+      sh.append(s); nodes.push(sh);
+    }
+
+    // Classements
+    const bh = el("div"); bh.append(el("h3", null, "Les meilleurs depuis le début de saison"));
+    const grid = el("div", "boards");
+    const board = (title, rows, unit, emptyNode) => {
+      const b = el("div", "board"); b.append(el("h4", null, title));
+      const clean = rows.map(([id, v]) => [P(id), v]).filter(([p]) => p);
+      if (!clean.length) { if (emptyNode) b.append(emptyNode); return b; }
+      const [p0, v0] = clean[0];
+      const ld = el("button", "lead"); ld.type = "button"; ld.addEventListener("click", open(p0));
+      const av = el("div", "av"); av.append(tokenAvatar(p0));
+      const nm = el("div"); nm.append(el("div", "nm", p0.name)); nm.append(el("div", "src", POS[p0.pos]));
+      ld.append(av, nm, el("div", "v", typeof v0 === "number" && !Number.isInteger(v0) ? fmt(v0) : String(v0)));
+      ld.setAttribute("aria-label", title + " : " + p0.name + ", " + (Number.isInteger(v0) ? v0 : fmt(v0)) + " " + unit);
+      b.append(ld);
+      if (clean.length > 1) {
+        const rows2 = el("div", "rank-rows"); const max = clean[0][1] || 1;
+        clean.slice(1, 5).forEach(([p, v], i) => {
+          const r = el("button", "rr"); r.type = "button"; r.addEventListener("click", open(p));
+          const bar = el("div", "bar"); const fill = el("i"); fill.style.width = Math.max(4, v / max * 100) + "%"; bar.append(fill);
+          r.append(el("span", "pos", String(i + 2)), el("span", "nm", lastName(p)), el("span", "v", Number.isInteger(v) ? String(v) : fmt(v)), bar);
+          r.setAttribute("aria-label", (i + 2) + "e : " + p.name + ", " + (Number.isInteger(v) ? v : fmt(v)) + " " + unit);
+          rows2.append(r);
+        });
+        b.append(rows2);
+      }
+      return b;
+    };
+    for (const bd of boards) grid.append(board(bd.title, bd.rows, bd.unit || ""));
+    // Le choix des supporters : moyenne des notes de saison (en direct)
+    const fans = state.players.map(p => [p.id, avgOf(sagg[p.id]), (sagg[p.id] || []).length]).filter(x => x[1] != null).sort((a, b) => b[1] - a[1] || b[2] - a[2]).map(x => [x[0], x[1]]);
+    const go = el("button", "go", "Noter les joueurs"); go.type = "button"; go.addEventListener("click", () => { state.view = "effectif"; try { history.replaceState(null, "", "#effectif"); } catch (e) {} render(); scrollTo(0, 0); });
+    const emp = el("div"); emp.style.display = "grid"; emp.style.gap = "8px"; emp.append(el("div", "empty-c", "Aucune note pour l'instant. Le joueur préféré des supporters apparaîtra ici."), go);
+    grid.prepend(board("Le choix des supporters", fans, "sur 10", emp));
+    bh.append(grid);
+    if (perf && perf.label) bh.append(el("div", "src", perf.label + (perf.source ? " · source : " + perf.source : "")));
+    nodes.push(bh);
+    body.replaceChildren(...nodes);
+  }
+
+  // ===== Panneau =====
+  let lastFocus = null;
+  function openPanel(o) {
+    lastFocus = document.activeElement;
+    state.open = o;
+    if (o.type === "player") {
+      const mine = state.me && state.reviews[state.me]?.r?.[o.id];
+      state.draft = { n: mine ? mine.n : null, c: mine ? (mine.c || "") : "" };
+    } else {
+      const mine = state.me && state.mreviews[state.me]?.m?.[o.id];
+      state.mdraft = { p: { ...((mine && mine.p) || {}) }, c: (mine && mine.c) || "", dirty: false };
+    }
+    $("panel").hidden = false; $("scrim").hidden = false; $("panel").scrollTop = 0;
+    o.focus = true; render();
+  }
+  function closePanel() {
+    state.open = null; $("panel").hidden = true; $("scrim").hidden = true; $("panel").replaceChildren();
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  $("scrim").addEventListener("click", closePanel);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && state.open) closePanel(); });
+
+  function panelHead(visual, kicker, title) {
+    const head = el("div", "panel-head");
+    head.append(visual);
+    const t = el("div"); t.style.minWidth = "0"; t.append(el("div", "pos", kicker)); const h = el("h3", null, title); h.id = "p-name"; t.append(h); head.append(t);
+    const x = el("button", "close", "✕"); x.type = "button"; x.id = "panel-close"; x.setAttribute("aria-label", "Fermer"); x.addEventListener("click", closePanel); head.append(x);
+    return head;
+  }
+  function finishPanel(nodes) {
+    const panel = $("panel"); const st = panel.scrollTop;
+    panel.replaceChildren(...nodes); panel.scrollTop = st;
+    if (state.open.focus) { state.open.focus = false; $("panel-close").focus(); }
+  }
+  function writeNotice() {
+    if (!state.db) return el("div", "notice", "Les notes sont indisponibles pour le moment. Recharge la page.");
+    if (!state.me) {
+      const d = el("div", "notice-cta"); d.append(el("div", "notice", "Pour noter, crée ton compte gratuit (pseudo + e-mail) ou connecte-toi."));
+      const row = el("div", "row");
+      const a = el("button", "btn small primary", "Créer un compte"); a.type = "button"; a.addEventListener("click", () => openAuth("signup"));
+      const b = el("button", "btn small", "Se connecter"); b.type = "button"; b.addEventListener("click", () => openAuth("login"));
+      row.append(a, b); d.append(row); return d;
+    }
+    return null;
+  }
+  function distBlock(list) {
+    const wrap = el("div"); wrap.style.flex = "1"; wrap.style.minWidth = "0";
+    const counts = Array(10).fill(0); list.forEach(r => counts[r.n - 1]++);
+    const max = Math.max(1, ...counts);
+    const dist = el("div", "dist"); dist.setAttribute("aria-label", "Répartition des notes");
+    counts.forEach((n, i) => { const d = el("div", n ? "on" : ""); d.style.height = (n ? Math.max(8, n / max * 100) : 4) + "%"; d.title = (i + 1) + "/10 : " + n + " avis"; dist.append(d); });
+    const labels = el("div", "dist-labels"); for (let i = 1; i <= 10; i++) labels.append(el("span", null, String(i)));
+    wrap.append(dist, labels); return wrap;
+  }
+  // Liste des avis signés par pseudo ; l'administratrice peut supprimer un avis déplacé
+  function fillAuthors(container, list, token, withNote, onDelete) {
+    for (const r of list) {
+      const it = el("div", "review");
+      const nm = state.pseudos[r.uid] || "Supporter";
+      const av = el("span", "rav", nm.replace(/[^A-Za-zÀ-ÿ0-9]/g, "").slice(0, 2).toUpperCase() || "?"); av.setAttribute("aria-hidden", "true");
+      const meta = el("div");
+      meta.append(el("div", "rname", r.uid === state.me ? nm + " (toi)" : nm), el("div", "rdate", r.t ? new Date(r.t).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : ""));
+      it.append(av, meta, withNote ? el("div", "rnote " + scoreClass(r.n), r.n + "/10") : el("span"));
+      if (r.c) it.append(el("p", null, r.c));
+      if (onDelete && state.isAdmin && r.uid !== state.me) {
+        const del = el("button", "btn small ghost danger mod", "Supprimer cet avis"); del.type = "button";
+        del.addEventListener("click", () => armed(del, "Confirmer la suppression", async () => {
+          const { error } = await onDelete(r);
+          if (error) toast("Suppression impossible. Réessaie."); else { toast("Avis supprimé"); await reloadNow(); }
+        }));
+        it.append(del);
+      }
+      container.append(it);
+    }
+  }
+
+  function renderPlayerPanel(sagg, magg) {
+    const token = state.open;
+    const p = state.players.find(x => x.id === token.id);
+    if (!p) { closePanel(); return; }
+    const keep = $("review-text"); if (keep) state.draft.c = keep.value;
+    const list = sagg[p.id] || []; const a = avgOf(list);
+    const vis = photoEl(p, "bigph") || jersey(p, true);
+    const head = panelHead(vis, POS[p.pos] + (p.num ? " · N°" + p.num : ""), p.name);
+    const body = el("div", "panel-body");
+    if (state.showPhotos && validId(p.photo)) { const cr = creditEl(p); if (cr) body.append(cr); }
+
+    if (p.apps != null) { const u = el("div", "usage"); u.append(usageDots(p, true), el("div", "notice", usageText(p))); body.append(u); }
+    const sum = el("div", "summary");
+    const left = el("div"); left.append(el("div", "avg " + scoreClass(a), fmt(a)), el("div", "meta", list.length ? "Note de saison · " + list.length + " avis" : "Aucun avis de saison"));
+    sum.append(left, distBlock(list)); body.append(sum);
+
+    // Notes en match
+    const pm = playerMatchAvg(magg, p.id);
+    const mbox = el("div", "box"); mbox.append(el("h4", null, "Notes en match"));
+    if (!pm.per.length) mbox.append(el("div", "notice", "Pas encore noté sur un match. Va dans l'onglet Matchs pour le faire."));
+    else {
+      const top = el("div", "summary"); top.append(el("div", "avg " + scoreClass(pm.avg), fmt(pm.avg)), el("div", "meta", "Moyenne sur " + pm.per.length + " match" + (pm.per.length > 1 ? "s" : "")));
+      mbox.append(top);
+      const ml = el("div", "mp-list");
+      for (const x of pm.per) {
+        const m = state.matches.find(mm => mm.id === x.mid);
+        const row = el("div", "mp");
+        row.append(el("div", "nm", (m.venue === "A" ? "à " : "vs ") + m.opp), el("div", "av"));
+        row.lastChild.append(el("b", scoreClass(x.a), fmt(x.a)), document.createTextNode(dateFr(m.date, { day: "numeric", month: "short" }) + " · " + x.n + " note" + (x.n > 1 ? "s" : "")));
+        ml.append(row);
+      }
+      mbox.append(ml);
+    }
+
+    // Formulaire avis de saison
+    const form = el("div", "box");
+    const mine = state.me && state.reviews[state.me]?.r?.[p.id];
+    form.append(el("h4", null, mine ? "Modifier ton avis de saison" : "Ton avis de saison"));
+    const nt = writeNotice();
+    if (nt) form.append(nt);
+    else {
+      let send;
+      const rate = el("div", "rate"); rate.setAttribute("role", "group"); rate.setAttribute("aria-label", "Note sur 10");
+      for (let i = 1; i <= 10; i++) {
+        const b = el("button", null, String(i)); b.type = "button"; b.id = "rate-" + i;
+        b.setAttribute("aria-pressed", String(state.draft.n === i));
+        b.addEventListener("click", () => { state.draft.n = i; rate.querySelectorAll("button").forEach((x, j) => x.setAttribute("aria-pressed", String(j + 1 === i))); send.disabled = state.saving; });
+        rate.append(b);
+      }
+      const scale = el("div", "scale"); scale.append(el("span", null, "1 · catastrophique"), el("span", null, "10 · légendaire"));
+      const ta = el("textarea"); ta.id = "review-text"; ta.maxLength = MAXC; ta.placeholder = "Sa saison, ce qu'il apporte à l'équipe… (facultatif)"; ta.value = state.draft.c;
+      const counter = el("span", "counter", ta.value.length + "/" + MAXC);
+      ta.addEventListener("input", () => { state.draft.c = ta.value; counter.textContent = ta.value.length + "/" + MAXC; });
+      const row = el("div", "form-row"); const actions = el("div"); actions.style.display = "flex"; actions.style.gap = "8px";
+      send = el("button", "btn primary", mine ? "Mettre à jour" : "Publier mon avis"); send.type = "button";
+      send.disabled = state.draft.n == null || state.saving;
+      send.addEventListener("click", () => saveSeason(p, send));
+      actions.append(send);
+      if (mine) { const rm = el("button", "btn ghost danger", "Supprimer"); rm.type = "button"; rm.addEventListener("click", () => armed(rm, "Confirmer la suppression", () => removeSeason(p))); actions.append(rm); }
+      row.append(counter, actions);
+      form.append(rate, scale, ta, row);
+    }
+    body.append(form);
+
+    const rv = el("div", "box"); rv.append(el("h4", null, "Avis des supporters"));
+    const wl = el("div", "reviews");
+    if (!list.length) wl.append(el("div", "notice", "Personne n'a encore donné son avis sur " + p.name + ". Sois le premier."));
+    rv.append(wl); body.append(rv, mbox);
+
+    finishPanel([head, body]);
+    if (list.length) fillAuthors(wl, list, token, true, (r) => state.db.from("season_reviews").delete().match({ user_id: r.uid, player_id: p.id }));
+  }
+
+  function renderMatchPanel(magg) {
+    const token = state.open;
+    const m = state.matches.find(x => x.id === token.id);
+    if (!m) { closePanel(); return; }
+    const keep = $("match-text"); if (keep) state.mdraft.c = keep.value;
+    const o = magg[m.id] || { players: {}, comments: [], voters: new Set() };
+    const vis = el("div", "bignum", m.venue === "A" ? m.ga + "-" + m.gf : m.gf + "-" + m.ga);
+    const head = panelHead(vis, m.comp + " · " + dateFr(m.date, { day: "numeric", month: "long" }), m.venue === "A" ? m.opp + " – Lens" : "Lens – " + m.opp);
+    const body = el("div", "panel-body");
+    body.append(statsBox(m));
+    if (m.statsUrl) { const lk = el("div"); lk.append(statLink(m)); body.append(lk); }
+
+    const best = motm(magg, m.id);
+    if (best) {
+      const bp = state.players.find(p => p.id === best.pid);
+      const b = el("div", "motm"); const t = el("div"); t.append(el("div", "lbl", "Homme du match selon les supporters"), el("div", "nm", bp.name));
+      b.append(t, el("div", "sc", fmt(best.a))); body.append(b);
+    }
+
+    const nt = writeNotice();
+    const box = el("div", "box");
+    box.append(el("h4", null, nt ? "Notes des supporters" : "Note les joueurs de ce match"));
+    if (nt) box.append(nt);
+    else box.append(el("div", "notice", "Note seulement ceux qui ont joué. Clique à nouveau sur une note pour l'enlever."));
+    const ml = el("div", "mp-list");
+    let saveBtn;
+    for (const [code] of LINES) {
+      for (const p of state.players.filter(x => x.pos === code).sort((a, b) => (a.num || 999) - (b.num || 999))) {
+        const l = o.players[p.id] || []; const a = avgOf(l);
+        const row = el("div", "mp");
+        const nm = el("div", "nm", p.name); nm.append(el("small", null, POS[p.pos]));
+        const av = el("div", "av");
+        if (l.length) { av.append(el("b", scoreClass(a), fmt(a)), document.createTextNode(l.length + " note" + (l.length > 1 ? "s" : ""))); } else av.textContent = "–";
+        row.append(nm, av);
+        if (!nt) {
+          const rate = el("div", "rate compact"); rate.setAttribute("role", "group"); rate.setAttribute("aria-label", "Note de " + p.name);
+          for (let i = 1; i <= 10; i++) {
+            const b = el("button", null, String(i)); b.type = "button"; b.id = "mr-" + p.id + "-" + i;
+            b.setAttribute("aria-pressed", String(state.mdraft.p[p.id] === i));
+            b.addEventListener("click", () => {
+              if (state.mdraft.p[p.id] === i) delete state.mdraft.p[p.id]; else state.mdraft.p[p.id] = i;
+              state.mdraft.dirty = true;
+              rate.querySelectorAll("button").forEach((x, j) => x.setAttribute("aria-pressed", String(state.mdraft.p[p.id] === j + 1)));
+              updateSave();
+            });
+            rate.append(b);
+          }
+          row.append(rate);
+        }
+        ml.append(row);
+      }
+    }
+    box.append(ml);
+    body.append(box);
+
+    let countEl;
+    function updateSave() { if (!saveBtn) return; const n = Object.values(state.mdraft.p).filter(okNote).length; countEl.textContent = n + " joueur" + (n > 1 ? "s" : "") + " noté" + (n > 1 ? "s" : ""); saveBtn.disabled = state.saving || !state.mdraft.dirty; }
+    if (!nt) {
+      const cbox = el("div", "box"); cbox.append(el("h4", null, "Ton commentaire sur le match"));
+      const ta = el("textarea"); ta.id = "match-text"; ta.maxLength = MAXC; ta.placeholder = "Ce que tu as pensé du match… (facultatif)"; ta.value = state.mdraft.c || "";
+      ta.addEventListener("input", () => { state.mdraft.c = ta.value; state.mdraft.dirty = true; updateSave(); });
+      cbox.append(ta); body.append(cbox);
+      const bar = el("div", "sticky-save");
+      countEl = el("span", "counter");
+      saveBtn = el("button", "btn primary", "Enregistrer mes notes"); saveBtn.type = "button";
+      saveBtn.addEventListener("click", () => saveMatch(m, saveBtn));
+      bar.append(countEl, saveBtn); body.append(bar);
+      updateSave();
+    }
+
+    const rv = el("div", "box"); rv.append(el("h4", null, "Commentaires des supporters"));
+    const wl = el("div", "reviews");
+    if (!o.comments.length) wl.append(el("div", "notice", "Pas encore de commentaire sur ce match."));
+    rv.append(wl); body.append(rv);
+
+    finishPanel([head, body]);
+    if (o.comments.length) fillAuthors(wl, o.comments, token, false, (r) => state.db.from("match_comments").delete().match({ user_id: r.uid, match_id: m.id }));
+  }
+
+  // ===== Écritures =====
+  function handleWriteError(e) {
+    console.error(e);
+    if (!state.me) { toast("Ta session a expiré. Reconnecte-toi."); openAuth("login"); }
+    else toast("Ce n'a pas été enregistré. Vérifie ta connexion et réessaie.");
+  }
+  async function saveSeason(p, btn) {
+    if (state.draft.n == null || state.saving || !state.me) return;
+    state.saving = true; btn.disabled = true;
+    const row = { user_id: state.me, player_id: p.id, note: state.draft.n, comment: (state.draft.c || "").trim().slice(0, MAXC), updated_at: new Date().toISOString() };
+    const { error } = await state.db.from("season_reviews").upsert(row);
+    if (error) handleWriteError(error); else { toast("Avis publié pour " + p.name); await reloadNow(); }
+    state.saving = false; render();
+  }
+  async function removeSeason(p) {
+    const { error } = await state.db.from("season_reviews").delete().match({ user_id: state.me, player_id: p.id });
+    if (error) toast("Impossible de supprimer l'avis. Réessaie."); else { state.draft = { n: null, c: "" }; toast("Ton avis a été supprimé"); await reloadNow(); }
+    render();
+  }
+  async function saveMatch(m, btn) {
+    if (state.saving || !state.me) return;
+    state.saving = true; btn.disabled = true;
+    const rows = Object.entries(state.mdraft.p).filter(([, v]) => okNote(v)).map(([player_id, note]) => ({ user_id: state.me, match_id: m.id, player_id, note }));
+    const c = (state.mdraft.c || "").trim().slice(0, MAXC);
+    // On remplace toutes mes notes de ce match, puis mon commentaire
+    let { error } = await state.db.from("match_ratings").delete().match({ user_id: state.me, match_id: m.id });
+    if (!error && rows.length) ({ error } = await state.db.from("match_ratings").insert(rows));
+    if (!error) ({ error } = c
+      ? await state.db.from("match_comments").upsert({ user_id: state.me, match_id: m.id, comment: c, updated_at: new Date().toISOString() })
+      : await state.db.from("match_comments").delete().match({ user_id: state.me, match_id: m.id }));
+    if (error) handleWriteError(error);
+    else { state.mdraft.dirty = false; toast("Notes enregistrées pour " + (m.venue === "A" ? m.opp + " – Lens" : "Lens – " + m.opp)); await reloadNow(); }
+    state.saving = false; render();
+  }
+
+  // Photos
+  let photoTarget = null;
+  function pickPhoto(p) { photoTarget = p; $("photo-input").value = ""; $("photo-input").click(); }
+  $("photo-input").addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0]; const p = photoTarget; photoTarget = null;
+    if (!f || !p) return;
+    toast("Import de la photo de " + p.name + "…");
+    try {
+      const blob = await shrink(f);
+      const res = await state.assets.upload(blob, { type: blob.type });
+      const old = p.photo;
+      await state.db.doc("players/" + p.id).update({ photo: res.id });
+      if (validId(old)) { try { await state.assets.delete(old); } catch (err) {} }
+      toast("Photo ajoutée pour " + p.name);
+    } catch (err) {
+      const c = err && err.code;
+      toast(c === "too_large" ? "Image trop lourde (20 Mo maximum)." : c === "unsupported_type" ? "Format non accepté. Utilise JPEG, PNG ou WebP." : c === "quota_or_state" ? "Plus de place pour les photos." : "La photo n'a pas pu être importée. Réessaie.");
+    }
+  });
+  // Réduit l'image à 480 px de large pour des cartes légères
+  async function shrink(file) {
+    try {
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, 480 / bmp.width);
+      const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width * scale); cv.height = Math.round(bmp.height * scale);
+      cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height);
+      const out = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.85));
+      return out || file;
+    } catch (e) { return file; }
+  }
+  async function removePhoto(p) {
+    const old = p.photo;
+    try { await state.db.doc("players/" + p.id).update({ photo: null }); if (validId(old)) { try { await state.assets.delete(old); } catch (e) {} } toast("Photo enlevée"); }
+    catch (e) { toast("Impossible d'enlever la photo."); }
+  }
+
+  // ===== Contrôles =====
+  document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => { state.view = t.dataset.v; try { history.replaceState(null, "", "#" + state.view); } catch (e) {} render(); }));
+  document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+    state.filter = c.dataset.f;
+    document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === c)));
+    render();
+  }));
+  $("show-photos").addEventListener("change", async (e) => {
+    const on = e.target.checked;
+    try { await state.db.doc("settings/display").set({ photos: on }); toast(on ? "Photos affichées" : "Maillots affichés"); }
+    catch (err) { e.target.checked = !on; toast("Réglage non enregistré. Réessaie."); }
+  });
+  $("sort").addEventListener("change", (e) => { state.sort = e.target.value; try { localStorage.setItem("ase-sort", state.sort); } catch (err) {} render(); });
+  $("admin-toggle").addEventListener("click", () => { state.adminOpen = !state.adminOpen; render(); });
+  const slug = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+  $("add-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = $("add-name").value.trim(); if (!name) return;
+    const num = parseInt($("add-num").value, 10);
+    const id = slug(name) || ("j-" + Date.now());
+    try { await state.db.doc("players/" + id).set({ name, num: Number.isFinite(num) ? num : null, pos: $("add-pos").value }); $("add-name").value = ""; $("add-num").value = ""; toast(name + " ajouté à l'effectif"); }
+    catch (err) { toast("Impossible d'ajouter ce joueur. Réessaie."); }
+  });
+  $("match-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const date = $("m-date").value, comp = $("m-comp").value.trim(), opp = $("m-opp").value.trim();
+    const gf = parseInt($("m-gf").value, 10), ga = parseInt($("m-ga").value, 10);
+    if (!date || !comp || !opp || !Number.isFinite(gf) || !Number.isFinite(ga)) return;
+    const id = date + "-" + (slug(opp) || "adv");
+    const rawStats = $("m-stats").value.trim(), statsUrl = safeUrl(rawStats);
+    if (rawStats && !statsUrl) { toast("Le lien doit commencer par https://"); return; }
+    try { await state.db.doc("matches/" + id).set({ date, comp, opp, venue: $("m-venue").value, gf, ga, statsUrl }); ["m-date", "m-comp", "m-opp", "m-gf", "m-ga", "m-stats"].forEach(k => $(k).value = ""); toast("Match ajouté"); }
+    catch (err) { toast("Impossible d'ajouter ce match. Réessaie."); }
+  });
+
+  // ===== Compte supporter : inscription, connexion, pseudo =====
+  const SB_URL = "https://zmbetrjoxbsqksfkyutr.supabase.co";
+  const SB_KEY = "sb_publishable_AYxz5p117r7ufDz9DDAHJA_Kd5OIoPK";
+  function cleanPseudo(s) { if (typeof s !== "string") return ""; return s.replace(/[\u0000-\u001f\u007f<>]/g, "").replace(/\s+/g, " ").trim().slice(0, 24); }
+  let meEditing = false;
+  function renderAccount() {
+    const t = $("me-text"), act = $("me-actions"); t.replaceChildren(); act.replaceChildren();
+    if (!state.db) { t.textContent = state.failed ? "Connexion au site impossible pour le moment." : "Chargement…"; return; }
+    if (!state.me) {
+      t.append(document.createTextNode("Crée ton compte gratuit (pseudo + e-mail) pour noter les joueurs et les matchs."));
+      const a = el("button", "btn small primary", "Créer un compte"); a.type = "button"; a.addEventListener("click", () => openAuth("signup"));
+      const b = el("button", "btn small", "Se connecter"); b.type = "button"; b.addEventListener("click", () => openAuth("login"));
+      act.append(a, b);
+    } else {
+      const mine = state.pseudos[state.me] || "…";
+      t.append(document.createTextNode("Connecté : "), el("b", null, mine), document.createTextNode(state.isAdmin ? " (administratrice)" : ""));
+      const a = el("button", "btn small", "Changer de pseudo"); a.type = "button";
+      a.addEventListener("click", () => { meEditing = true; $("me-input").value = state.pseudos[state.me] || ""; renderAccount(); $("me-input").focus(); });
+      const b = el("button", "btn small ghost", "Se déconnecter"); b.type = "button";
+      b.addEventListener("click", async () => { await state.db.auth.signOut(); toast("Tu es déconnecté"); });
+      act.append(a, b);
+    }
+    t.hidden = meEditing; act.hidden = meEditing; $("me-form").hidden = !meEditing;
+  }
+  function meError(msg) { let e = $("me-form").querySelector(".err"); if (!e) { e = el("div", "err"); $("me-form").append(e); } e.textContent = msg; }
+  function closeMeForm() { meEditing = false; const e = $("me-form").querySelector(".err"); if (e) e.remove(); renderAccount(); }
+  $("me-cancel").addEventListener("click", closeMeForm);
+  $("me-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const v = cleanPseudo($("me-input").value);
+    if (v.length < 2) { meError("Le pseudo doit faire au moins 2 caractères."); return; }
+    const { error } = await state.db.from("profiles").update({ pseudo: v }).eq("id", state.me);
+    if (error) { meError(error.code === "23505" ? "Ce pseudo est déjà pris. Choisis-en un autre." : "Le pseudo n'a pas été enregistré. Réessaie."); return; }
+    closeMeForm(); toast("Pseudo enregistré : " + v); await reloadNow();
+  });
+
+  // Fenêtre de compte : créer un compte, se connecter, mot de passe oublié, nouveau mot de passe
+  let authMode = "signup";
+  const AUTH = {
+    signup: { title: "Créer mon compte", intro: "Gratuit. Ton pseudo s'affiche avec tes notes, ton e-mail reste privé.", submit: "Créer mon compte", fields: ["pseudo", "email", "pass"] },
+    login: { title: "Se connecter", intro: "Content de te revoir, supporter !", submit: "Se connecter", fields: ["email", "pass"] },
+    forgot: { title: "Mot de passe oublié", intro: "Indique ton e-mail : tu recevras un lien pour choisir un nouveau mot de passe.", submit: "Envoyer le lien", fields: ["email"] },
+    reset: { title: "Nouveau mot de passe", intro: "Choisis ton nouveau mot de passe.", submit: "Enregistrer", fields: ["pass"] }
+  };
+  let authFocus = null;
+  function openAuth(mode) {
+    if (!state.db) return;
+    if (!$("auth").hidden && authMode === mode) return;
+    if ($("auth").hidden) authFocus = document.activeElement;
+    authMode = mode; const c = AUTH[mode];
+    $("auth-title").textContent = c.title; $("auth-intro").textContent = c.intro; $("auth-submit").textContent = c.submit; $("auth-submit").disabled = false;
+    $("f-pseudo").hidden = !c.fields.includes("pseudo"); $("f-email").hidden = !c.fields.includes("email"); $("f-pass").hidden = !c.fields.includes("pass");
+    $("a-pass").autocomplete = mode === "login" ? "current-password" : "new-password";
+    $("pass-hint").hidden = mode === "login";
+    $("auth-err").hidden = true; $("auth-ok").hidden = true; $("auth-form").querySelectorAll("label, #auth-submit").forEach(n => n.style.display = "");
+    const links = $("auth-links"); links.replaceChildren();
+    const link = (txt, m) => { const b = el("button", "linkbtn", txt); b.type = "button"; b.addEventListener("click", () => openAuth(m)); return b; };
+    if (mode === "signup") links.append(document.createTextNode("Déjà un compte ? "), link("Se connecter", "login"));
+    if (mode === "login") links.append(link("Créer un compte", "signup"), link("Mot de passe oublié ?", "forgot"));
+    if (mode === "forgot") links.append(link("Retour à la connexion", "login"));
+    $("auth").hidden = false; $("auth-scrim").hidden = false;
+    const first = c.fields[0] === "pseudo" ? "a-pseudo" : c.fields[0] === "email" ? "a-email" : "a-pass";
+    setTimeout(() => $(first).focus(), 30);
+  }
+  function closeAuth() { $("auth").hidden = true; $("auth-scrim").hidden = true; $("a-pass").value = ""; if (authFocus && authFocus.focus) authFocus.focus(); }
+  $("auth-close").addEventListener("click", closeAuth);
+  $("auth-scrim").addEventListener("click", closeAuth);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("auth").hidden) closeAuth(); });
+  function authErr(msg) { $("auth-ok").hidden = true; $("auth-err").hidden = false; $("auth-err").textContent = msg; }
+  function authOk(msg) { $("auth-err").hidden = true; $("auth-ok").hidden = false; $("auth-ok").textContent = msg; }
+  function frError(error) {
+    const m = (error && error.message || "").toLowerCase();
+    if (error && error.status === 429 || m.includes("rate limit") || m.includes("security purposes")) return "Trop de tentatives. Réessaie dans quelques minutes.";
+    if (m.includes("already registered") || m.includes("already been registered")) return "Un compte existe déjà avec cette adresse. Connecte-toi.";
+    if (m.includes("invalid login")) return "E-mail ou mot de passe incorrect.";
+    if (m.includes("not confirmed")) return "Ton adresse n'est pas encore confirmée : clique sur le lien reçu par e-mail.";
+    if (m.includes("password") && (m.includes("least") || m.includes("short") || m.includes("weak"))) return "Mot de passe trop faible : 8 caractères minimum.";
+    if (m.includes("invalid") && m.includes("email")) return "Cette adresse e-mail n'est pas valide.";
+    if (m.includes("same") && m.includes("password")) return "Choisis un mot de passe différent de l'ancien.";
+    return "Une erreur est survenue. Réessaie dans un instant.";
+  }
+  const backUrl = () => location.origin + location.pathname;
+  $("auth-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const sb = state.db, pseudo = cleanPseudo($("a-pseudo").value), email = $("a-email").value.trim(), pass = $("a-pass").value;
+    const need = AUTH[authMode].fields;
+    if (need.includes("pseudo") && pseudo.length < 2) return authErr("Choisis un pseudo d'au moins 2 caractères.");
+    if (need.includes("email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return authErr("Indique une adresse e-mail valide.");
+    if (need.includes("pass") && authMode !== "login" && pass.length < 8) return authErr("Le mot de passe doit faire au moins 8 caractères.");
+    if (need.includes("pass") && !pass) return authErr("Indique ton mot de passe.");
+    $("auth-submit").disabled = true;
+    try {
+      if (authMode === "signup") {
+        const esc = pseudo.replace(/[\\%_]/g, (c) => "\\" + c);
+        const { data: dup } = await sb.from("profiles").select("id").ilike("pseudo", esc).limit(1);
+        if (dup && dup.length) return authErr("Ce pseudo est déjà pris. Choisis-en un autre.");
+        const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { pseudo }, emailRedirectTo: backUrl() } });
+        if (error) return authErr(frError(error));
+        if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) return authErr("Un compte existe déjà avec cette adresse. Connecte-toi.");
+        if (data.session) { closeAuth(); toast("Bienvenue " + pseudo + " ! Tu peux noter les joueurs."); }
+        else { authOk("Presque fini ! Un e-mail de confirmation a été envoyé à " + email + ". Clique sur le lien qu'il contient pour activer ton compte (pense à regarder dans les indésirables)."); $("auth-form").querySelectorAll("label, #auth-submit").forEach(n => n.style.display = "none"); }
+      } else if (authMode === "login") {
+        const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+        if (error) return authErr(frError(error));
+        closeAuth(); toast("Connecté. Bon match !");
+      } else if (authMode === "forgot") {
+        const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: backUrl() });
+        if (error) return authErr(frError(error));
+        authOk("Si un compte existe avec cette adresse, un e-mail vient de partir avec un lien pour choisir un nouveau mot de passe.");
+      } else if (authMode === "reset") {
+        const { error } = await sb.auth.updateUser({ password: pass });
+        if (error) return authErr(frError(error));
+        closeAuth(); toast("Mot de passe modifié");
+      }
+    } catch (err) { console.error(err); authErr("Connexion impossible. Vérifie ta connexion internet et réessaie."); }
+    finally { $("auth-submit").disabled = false; }
+  });
+
+  function safeUrl(u) { if (typeof u !== "string" || u.length > 400) return null; try { const x = new URL(u); return x.protocol === "https:" ? x.href : null; } catch (e) { return null; } }
+  function cleanCredit() { return null; }
+  function cleanPerf(v) {
+    if (!v || typeof v !== "object") return null;
+    return {
+      label: typeof v.label === "string" ? v.label.slice(0, 120) : "", source: typeof v.source === "string" ? v.source.slice(0, 40) : "",
+      boards: (Array.isArray(v.boards) ? v.boards : []).slice(0, 8).filter(b => b && typeof b.title === "string" && Array.isArray(b.rows))
+        .map(b => ({ key: String(b.key || ""), title: b.title.slice(0, 40), unit: String(b.unit || "").slice(0, 20), rows: b.rows.filter(r => Array.isArray(r) && typeof r[0] === "string" && typeof r[1] === "number").slice(0, 10) }))
+    };
+  }
+
+  // ===== Chargement des données depuis Supabase =====
+  async function fetchAll(table, cols) {
+    let out = [];
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await state.db.from(table).select(cols).range(from, from + 999);
+      if (error) throw error;
+      out = out.concat(data || []);
+      if (!data || data.length < 1000) return out;
+    }
+  }
+  async function loadAll() {
+    const [pl, ma, se, pr, sr, mr, mc] = await Promise.all([
+      fetchAll("players", "*"), fetchAll("matches", "*"), fetchAll("settings", "*"), fetchAll("profiles", "id,pseudo"),
+      fetchAll("season_reviews", "user_id,player_id,note,comment,updated_at"), fetchAll("match_ratings", "user_id,match_id,player_id,note"), fetchAll("match_comments", "user_id,match_id,comment,updated_at")
+    ]);
+    state.players = pl.map(v => ({ id: v.id, name: String(v.name || v.id), num: typeof v.num === "number" ? v.num : null, pos: POS[v.pos] ? v.pos : "M", photo: null, credit: null, slot: SLOTS[v.slot] ? v.slot : null, starts: num(v.starts), apps: num(v.apps) }));
+    state.matches = ma.map(v => ({ id: v.id, date: String(v.date || ""), comp: String(v.comp || "Match"), opp: String(v.opp || "?"), venue: VENUE[v.venue] ? v.venue : "H", gf: Number(v.gf) || 0, ga: Number(v.ga) || 0, statsUrl: safeUrl(v.stats_url), stats: cleanStats(v.stats) }))
+      .sort((a, b) => b.date.localeCompare(a.date));
+    const S = {}; se.forEach(r => { S[r.key] = r.value; });
+    state.standings = S.standings || null;
+    const f = S.formation; state.formation = f ? { name: typeof f.name === "string" ? f.name.slice(0, 12) : "", text: typeof f.text === "string" ? f.text.slice(0, 200) : "" } : null;
+    state.perf = cleanPerf(S.performances);
+    const ps = {}; pr.forEach(r => { const v = cleanPseudo(r.pseudo); if (v) ps[r.id] = v; }); state.pseudos = ps;
+    const rev = {}; sr.forEach(r => { (rev[r.user_id] = rev[r.user_id] || { r: {} }).r[r.player_id] = { n: r.note, c: r.comment || "", t: Date.parse(r.updated_at) || 0 }; }); state.reviews = rev;
+    const mrev = {}; const slotOf = (u, m) => { const x = (mrev[u] = mrev[u] || { m: {} }); return (x.m[m] = x.m[m] || { p: {}, c: "", t: 0 }); };
+    mr.forEach(r => { slotOf(r.user_id, r.match_id).p[r.player_id] = r.note; });
+    mc.forEach(r => { const s = slotOf(r.user_id, r.match_id); s.c = r.comment || ""; s.t = Date.parse(r.updated_at) || 0; });
+    state.mreviews = mrev;
+    Object.assign(state.loaded, { players: true, matches: true, reviews: true, mreviews: true });
+  }
+  async function reloadNow() { try { await loadAll(); state.failed = false; } catch (e) { console.error(e); } render(); renderAccount(); }
+  let reloadT = null;
+  function scheduleReload() { clearTimeout(reloadT); reloadT = setTimeout(reloadNow, 600); }
+
+  async function applySession(session) {
+    const id = session && session.user ? session.user.id : null;
+    const changed = id !== state.me;
+    state.me = id; state.isAdmin = false;
+    if (id) { try { const { data } = await state.db.rpc("is_admin"); state.isAdmin = data === true; } catch (e) {} }
+    if (changed) { meEditing = false; if (id && !state.pseudos[id]) await reloadNow(); if (state.open) openPanel(state.open); }
+    renderAccount(); render();
+  }
+
+  // ===== Démarrage =====
+  async function start() {
+    if (!window.supabase || !window.supabase.createClient) { state.failed = true; render(); renderAccount(); return; }
+    const sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+    state.db = sb; state.canAdmin = false;
+    try { await loadAll(); } catch (e) { console.error(e); state.failed = true; }
+    const { data } = await sb.auth.getSession();
+    await applySession(data.session);
+    sb.auth.onAuthStateChange((event, session) => {
+      // Les appels à Supabase se font hors du rappel, comme le recommande la bibliothèque
+      setTimeout(() => { applySession(session); if (event === "PASSWORD_RECOVERY") openAuth("reset"); }, 0);
+    });
+    sb.channel("avis-live").on("postgres_changes", { event: "*", schema: "public" }, scheduleReload).subscribe();
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) scheduleReload(); });
+    render(); renderAccount();
+  }
+  renderAccount();
+  render();
+  start();
+})();
+</script>
+</body>
+</html>
